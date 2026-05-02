@@ -387,6 +387,20 @@ function drawSheet(canvas, data) {
       ctx.fillText(txt, x0 + PAD_X, startY + j * LINE_H);
     }
   }
+  // --- ADD WATERMARK START ---
+  ctx.save(); // Save current state
+  ctx.font = "italic 32px 'JetBrains Mono', monospace"; // Small, professional font
+  ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Light grey/transparent
+  ctx.textAlign = "right";
+  ctx.textBaseline = "bottom";
+  
+  // Position it in the bottom-right corner, accounting for the margin
+  const watermarkX = C_W - MAR;
+  const watermarkY = C_H - (MAR / 2);
+  
+  ctx.fillText("Generated on 'imasyyyyy5.github.io/Insect-labels-genrator/'", watermarkX, watermarkY);
+  ctx.restore(); // Restore state
+  // --- ADD WATERMARK END ---
 }
 
 // ══════════════════════════════════════════════════════
