@@ -1,626 +1,523 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- ═══ Required / essential meta (preserved) ═══ -->
 <meta name="google-site-verification" content="Tjf1KCSVqw2DIdWFJZ1Li1UtKZGX9LYnZ6MgSZhLXvs" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Insect Label Generator — IARI</title>
-<meta name="description" content="A free, fast, and easy Insect Label Generator for standard IARI format. Create, edit, and download A4 sheets of entomology collection labels.">
-<meta name="keywords" content="insect label generator, entomology labels, IARI insect labels, agriculture, bug collection, label maker, insect labels, label generator for insect collectio">
+<title>Insect Label Generator — Free IARI-Format Entomology Labels (A4)</title>
+<meta name="description" content="Generate up to 120 IARI-format insect collection labels on one A4 sheet. Set your collector name, localities and dates, fine-tune any label, then download a print-ready PNG — free, offline-capable, no sign-up.">
+<meta name="keywords" content="insect label generator, entomology labels, IARI insect labels, agriculture, bug collection, label maker, insect labels, label generator for insect collection, specimen label, IARI format, A4 label sheet, PAU entomology">
 <meta name="author" content="Amtoj Singh">
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ═══ Expanded SEO / discovery meta ═══ -->
+<link rel="canonical" href="https://imasyyyyy5.github.io/Insect-labels-genrator/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0f1108">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Insect Label Generator — Free IARI-Format Entomology Labels">
+<meta property="og:description" content="Create, edit and print up to 120 IARI-format insect collection labels on a single A4 sheet. Free, fast, and works offline.">
+<meta property="og:url" content="https://imasyyyyy5.github.io/Insect-labels-genrator/">
+<meta property="og:image" content="https://imasyyyyy5.github.io/Insect-labels-genrator/icons/icon-192.png">
+<meta property="og:site_name" content="Insect Label Generator">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Insect Label Generator — Free IARI-Format Entomology Labels">
+<meta name="twitter:description" content="Generate print-ready IARI-format insect collection labels — 120 per A4 sheet, free and offline-capable.">
+<meta name="twitter:image" content="https://imasyyyyy5.github.io/Insect-labels-genrator/icons/icon-192.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Insect Label Generator",
+  "alternateName": "IARI Insect Label Generator",
+  "url": "https://imasyyyyy5.github.io/Insect-labels-genrator/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (web / installable PWA)",
+  "description": "A free tool to generate, edit and print IARI-format entomology collection labels — up to 120 labels per A4 sheet.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "creator": { "@type": "Person", "name": "Amtoj Singh", "url": "https://www.linkedin.com/in/amtoj-singh-1a8764387" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the IARI insect label format?",
+      "acceptedAnswer": { "@type": "Answer", "text": "IARI format is a standard 40×12mm specimen label used widely in Indian entomology collections. Each label carries up to four lines: host or collection method, locality, date, and collector name." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account to use the generator?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. The generator works directly in your browser with no sign-up and no login required." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the Insect Label Generator work offline?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Install it to your home screen as an app and it continues to work without an internet connection." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I edit an individual label after generating the sheet?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Tap any label in the sheet editor to override its host, locality, date, or collector name without regenerating the whole sheet." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my collection data uploaded anywhere?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Saved sheets are kept only in your device's local history — nothing is sent to a server." }
+    }
+  ]
+}
+</script>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f0ece3;--card:#fff;--border:#ddd8ce;
-  --green:#3d6b34;--green-dk:#2d5127;--green-lite:#eaf3e6;
-  --amber:#b8711a;--amber-lite:#fef3e6;--red:#c0392b;
-  --text:#1a1a16;--sub:#6b6760;
-  --wkd-bg:#d4edbc;--wkd-c:#2a4e10;--wkd-b:#9dce74;
-  --wrk-bg:#fde4c0;--wrk-c:#7a3b10;--wrk-b:#e0a870;
-  --r:8px;
+  --soil:#0f1108;--bark:#171a10;--card:#1b1f14;--field:#232817;--border:#333823;
+  --moss:#5c8a3f;--moss-hi:#7cb654;--moss-dk:#365227;--moss-lite:#1e2916;
+  --amber:#d99a44;--amber-dim:#a97530;--pin:#b5432f;
+  --paper:#f3ead2;--paper-dk:#e2d5ac;--ink:#211c10;
+  --wkd-bg:#1e2916;--wkd-c:#93cf6f;--wkd-b:#3c5c2b;
+  --wrk-bg:#2c2314;--wrk-c:#e3ac67;--wrk-b:#5c4a2c;
+  --text:#ece6d4;--sub:#9a9782;
+  --r:9px;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-html,body{height:100%;font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--text);overflow:hidden}
+html{scroll-behavior:smooth}
+body{font-family:'Lora',Georgia,serif;background:var(--soil);color:var(--text);line-height:1.6;position:relative}
+body::before{content:'';position:fixed;inset:0;background-image:var(--grain);opacity:.035;pointer-events:none;mix-blend-mode:overlay;z-index:1}
+a{color:inherit}
+img{max-width:100%;display:block}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-weight:600;letter-spacing:-.01em;font-family:'Fraunces','Lora',Georgia,serif}
 
-/* Pages */
-.page{position:fixed;inset:0;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;will-change:transform}
-.page.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wkd-c);font-weight:700;display:inline-flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:16px;height:1.5px;background:var(--wkd-c)}
 
-/* Nav */
-.nav{background:var(--green);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.18);z-index:10}
-.nav-left, .nav-right {display:flex;align-items:center;gap:10px}
-.nav-back{background:none;border:none;color:#fff;cursor:pointer;padding:6px 4px;opacity:.85;display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;transition:opacity .15s}
-.nav-back:hover{opacity:1}
-.nav-title h1{color:#fff;font-size:.95rem;font-weight:600}
-.nav-title small{font-family:'JetBrains Mono',monospace;font-size:.5rem;opacity:.6;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:1px;color:#fff}
-.ig-link {color: #fff; opacity: 0.85; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; padding: 4px;}
-.ig-link:hover {opacity: 1; transform: scale(1.08);}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2.5px solid var(--moss-hi);outline-offset:2px}
+.skip-link{position:absolute;left:-999px;top:0;background:var(--moss);color:#fff;padding:10px 16px;z-index:999;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
-/* ── HOME ────────────────────────────── */
-#page-home{background:var(--bg)}
-.home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 14px 100px}
-.home-hero{background:var(--green);border-radius:12px;padding:18px 16px;margin-bottom:18px;color:#fff}
-.home-hero h2{font-size:1.05rem;font-weight:600;margin-bottom:4px}
-.home-hero p{font-size:.78rem;opacity:.75;line-height:1.6;font-style:italic}
-.card{background:var(--card);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;margin-bottom:12px}
-.card-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:#fafaf8}
-.card-hdr-icon{font-size:.95rem}
-.card-hdr-txt{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);font-weight:500}
-.card-body{padding:13px 14px}
-label.lbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:block}
-input[type="text"],textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r);background:#fafaf8;font-family:'Lora',Georgia,serif;font-size:.86rem;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;line-height:1.5}
-input[type="text"]:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(61,107,52,.11)}
-textarea{resize:vertical;min-height:155px;font-size:.79rem}
-.hint{font-size:.67rem;color:var(--sub);font-style:italic;margin-top:5px;line-height:1.5}
+/* ═══ CARD — specimen record card ═══ */
+.card{background:var(--card);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;position:relative;transition:border-color .2s,transform .2s,box-shadow .2s}
+.card::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.02;pointer-events:none;mix-blend-mode:overlay}
+.card-hdr{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:var(--field);position:relative}
+.card-hdr-icon{font-size:1rem;flex-shrink:0;color:var(--text)}
+.card-hdr-txt{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);font-weight:700}
+.card-body{padding:16px 18px}
+.card-body p{color:var(--sub);font-size:.87rem}
+.card-body h3{font-size:1rem;margin-bottom:6px;color:var(--text)}
 
-/* Dates */
-.date-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
-.date-row{display:flex;align-items:center;gap:5px}
-.date-row input{margin:0;flex:1;font-size:.77rem;padding:6px 8px}
-.tag{font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:5px 7px;border-radius:4px;border:1px solid;cursor:pointer;letter-spacing:.04em;white-space:nowrap;font-weight:700;transition:all .12s;flex-shrink:0}
-.tag.weekend{background:var(--wkd-bg);color:var(--wkd-c);border-color:var(--wkd-b)}
-.tag.workday{background:var(--wrk-bg);color:var(--wrk-c);border-color:var(--wrk-b)}
-.btn-rm{background:none;border:none;color:var(--red);font-size:.9rem;cursor:pointer;opacity:.4;padding:2px 3px;line-height:1;flex-shrink:0;transition:opacity .12s}
-.btn-rm:hover{opacity:1}
-.btn-add-date{width:100%;padding:8px;background:none;border:1.5px dashed var(--border);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.1em;color:var(--sub);cursor:pointer;text-transform:uppercase;transition:all .15s}
-.btn-add-date:hover{border-color:var(--green);color:var(--green);background:var(--green-lite)}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.06em;padding:4px 9px;border-radius:5px;border:1px solid;font-weight:700;display:inline-block}
+.chip.on{background:var(--wkd-bg);color:var(--wkd-c);border-color:var(--wkd-b)}
+.chip.edit{background:var(--wrk-bg);color:var(--wrk-c);border-color:var(--wrk-b)}
 
-.home-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 14px;background:rgba(240,236,227,.96);backdrop-filter:blur(8px);border-top:1.5px solid var(--border);z-index:50}
-.btn-generate{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,transform .1s;box-shadow:0 4px 16px rgba(61,107,52,.3)}
-.btn-generate:hover{background:var(--green-dk);transform:translateY(-1px)}
-.btn-generate:active{transform:translateY(0)}
+/* ═══ NAV ═══ */
+.topnav{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#2c4520,var(--moss-dk));border-bottom:1.5px solid #2a4322;box-shadow:0 2px 14px rgba(0,0,0,.35)}
+.topnav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;max-width:1080px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:9px;color:#fff}
+.brand-mark{font-size:1.15rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.brand-txt h1{font-size:.92rem;font-weight:600;color:#fff;font-family:'Fraunces','Lora',serif}
+.brand-txt small{display:block;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-top:1px}
+.nav-links{display:flex;align-items:center;gap:22px}
+.nav-links a{font-size:.78rem;color:rgba(255,255,255,.8);text-decoration:none;font-weight:500;transition:color .15s}
+.nav-links a:hover{color:#fff}
+.btn-nav-cta{background:var(--amber);color:#241a08!important;padding:6px 12px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none!important;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.btn-nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+@media(max-width:720px){.nav-links a:not(.btn-nav-cta){display:none}}
 
-/* ── PREVIEW ─────────────────────────── */
-#page-preview{background:#cbc6bc}
-.preview-toolbar{padding:9px 14px;border-bottom:1.5px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px}
-.stats-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.08em;color:var(--sub);white-space:nowrap}
-.edited-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.06em;color:var(--amber)}
-.toolbar-right{display:flex;align-items:center;gap:8px}
-.btn-dl{background:var(--green);color:#fff;border:none;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;gap:5px;transition:opacity .15s,transform .1s;white-space:nowrap}
-.btn-dl:hover{opacity:.9;transform:translateY(-1px)}
-.btn-dl:active{transform:translateY(0)}
+/* ═══ BUTTONS ═══ */
+.btn-primary{background:var(--moss);color:#fff;padding:13px 22px;border-radius:var(--r);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 18px rgba(92,138,63,.4),0 1px 0 rgba(255,255,255,.08) inset;transition:background .15s,transform .15s,box-shadow .15s}
+.btn-primary:hover{background:var(--moss-hi);transform:translateY(-2px);box-shadow:0 8px 24px rgba(92,138,63,.5)}
+.btn-secondary{color:var(--amber);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1.5px solid var(--amber);padding-bottom:2px;transition:opacity .15s}
+.btn-secondary:hover{opacity:.65}
 
-/* Canvas scroll area */
-.canvas-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;justify-content:center;padding:16px}
-.canvas-wrap{position:relative;flex-shrink:0}
-#sheet-canvas{display:block;box-shadow:0 8px 40px rgba(0,0,0,.22)}
+/* ═══ HERO — specimen drawer ═══ */
+.hero{padding:56px 0 68px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(92,138,63,.10), transparent 60%),
+    radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,.04) 1.5px, transparent 0) 0 0/24px 24px,
+    var(--soil)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;position:relative;z-index:2}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+.hero-copy h1{font-size:2.35rem;line-height:1.14;margin:14px 0 14px;color:var(--text);font-weight:600}
+.hero-copy h1 em{color:var(--wkd-c);font-style:italic}
+@media(max-width:520px){.hero-copy h1{font-size:1.7rem}}
+.hero-copy p.lede{font-size:.93rem;color:var(--sub);max-width:48ch;margin-bottom:22px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:12px}
+.hero-fineprint{font-size:.72rem;color:var(--sub);font-style:italic}
 
-/* Hit-targets layered over canvas */
-#hit-layer{position:absolute;top:0;left:0;width:100%;height:100%}
-.hit-cell{position:absolute;cursor:pointer;transition:background .1s}
-.hit-cell:hover{background:rgba(61,107,52,.12)}
-.hit-cell.overridden{box-shadow:inset 0 0 0 2px var(--amber)}
+/* ═══ SPECIMEN TRAY — proper rectangular labels, depth from shadow + a folded corner ═══ */
+.pin-stage{position:relative;border-radius:14px;padding:26px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;align-content:center;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(217,154,68,.06), transparent 65%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,.015) 0 2px, transparent 2px 5px),
+    linear-gradient(155deg,#221c11,#171307 70%);
+  border:1px solid #2c2415;box-shadow:inset 0 0 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.03)}
+.pin-stage::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.05;mix-blend-mode:overlay;border-radius:14px;pointer-events:none}
 
-/* ── MODAL ───────────────────────────── */
-.overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.48);align-items:flex-end;justify-content:center;padding:0}
-@media(min-width:500px){.overlay{align-items:center;padding:16px}}
-.overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:460px;box-shadow:0 -8px 40px rgba(0,0,0,.2);animation:slideUp .22s cubic-bezier(.4,0,.2,1);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
-@media(min-width:500px){.modal{border-radius:12px;box-shadow:0 16px 60px rgba(0,0,0,.25)}}
-@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-hdr{padding:13px 16px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.modal-hdr-left{display:flex;align-items:center;gap:8px}
-.modal-badge{background:var(--amber-lite);color:var(--amber);border:1px solid #e8c090;font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:3px 8px;border-radius:4px;letter-spacing:.06em}
-.modal-hdr h3{font-size:.92rem;font-weight:600}
-.modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--sub);line-height:1;padding:2px 4px;transition:color .12s}
-.modal-close:hover{color:var(--text)}
-.modal-body{overflow-y:auto;flex:1;padding:13px 16px;display:flex;flex-direction:column;gap:12px}
-.field-row{display:flex;flex-direction:column;gap:4px}
-.field-row .lbl{margin-bottom:0}
-.field-row input{margin:0;font-size:.86rem}
-.modal-footer{padding:11px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
-.btn-cancel{flex:1;padding:10px;background:none;border:1.5px solid var(--border);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;cursor:pointer;color:var(--sub);transition:all .12s}
-.btn-cancel:hover{border-color:var(--sub)}
-.btn-reset-one{flex:1;padding:10px;background:none;border:1.5px solid var(--red);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;cursor:pointer;color:var(--red);transition:all .12s}
-.btn-reset-one:hover{background:var(--red);color:#fff}
-.btn-save{flex:2;padding:10px;background:var(--amber);border:none;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;cursor:pointer;color:#fff;transition:opacity .12s}
-.btn-save:hover{opacity:.88}
+.spec-card{position:relative;padding:15px 16px 12px;min-height:96px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px;
+  background:
+    var(--grain),
+    linear-gradient(168deg,#fbf5e4 0%, var(--paper) 55%, var(--paper-dk) 100%);
+  background-size:180px 180px, cover;
+  background-blend-mode:overlay,normal;
+  border-radius:2px;
+  transform:rotate(var(--r,0deg));
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.4),
+    0 8px 14px -6px rgba(0,0,0,.5),
+    0 20px 30px -16px rgba(0,0,0,.5);
+  transition:transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s;
+}
+.spec-card:nth-child(1){--r:-1.4deg}
+.spec-card:nth-child(2){--r:1.1deg}
+.spec-card:nth-child(3){--r:1.6deg}
+.spec-card:nth-child(4){--r:-1deg}
+
+/* folded corner — a small dog-ear with its own cast shadow for tactile depth */
+.spec-card::before{content:'';position:absolute;top:0;right:0;width:0;height:0;
+  border-style:solid;border-width:0 17px 17px 0;
+  border-color:transparent var(--paper-dk) transparent transparent;
+  filter:drop-shadow(-2px 2px 3px rgba(0,0,0,.35));
+  transition:border-width .25s}
+
+.spec-card span{font-family:'Lora',Georgia,serif;font-size:.72rem;line-height:1.44;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+
+.spec-card:hover{transform:rotate(0deg) translateY(-4px);
+  box-shadow:
+    0 2px 3px rgba(0,0,0,.45),
+    0 16px 24px -8px rgba(0,0,0,.55),
+    0 32px 44px -18px rgba(0,0,0,.5)}
+.spec-card:hover::before{border-width:0 22px 22px 0}
+
+@media(max-width:900px){.pin-stage{grid-template-columns:1fr 1fr;padding:20px}}
+@media(max-width:560px){.pin-stage{grid-template-columns:1fr;padding:18px}.spec-card{min-height:82px}.spec-card span{font-size:.7rem}}
+
+/* ═══ SECTION HEADERS ═══ */
+.sec{padding:64px 0}
+.sec-hdr{max-width:620px;margin-bottom:32px}
+.sec-hdr h2{font-size:1.55rem;margin-top:12px;color:var(--text)}
+.sec-hdr p{color:var(--sub);margin-top:10px;font-size:.9rem}
+@media(max-width:520px){.sec{padding:46px 0}.sec-hdr h2{font-size:1.32rem}}
+
+.stat-card .card-body{display:flex;flex-wrap:wrap;padding:0}
+.stat-cell{flex:1 1 200px;padding:18px 18px;border-right:1px dashed var(--border);text-align:center;transition:background .2s}
+.stat-cell:hover{background:rgba(92,138,63,.06)}
+.stat-cell:last-child{border-right:none}
+.stat-cell .num{font-family:'JetBrains Mono',monospace;font-size:1.08rem;font-weight:700;color:var(--wkd-c);display:block;margin-bottom:3px}
+.stat-cell .cap{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+
+.steps{display:flex;flex-direction:column;gap:12px}
+.steps .card:hover{transform:translateX(3px);border-color:var(--moss-hi)}
+
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:860px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.feat-grid{grid-template-columns:1fr}}
+.feat-card:hover{border-color:var(--moss-hi);transform:translateY(-3px);box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
+
+.spec-list{list-style:none}
+.spec-list li{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--border);font-size:.86rem}
+.spec-list li:last-child{border-bottom:none}
+.spec-list .k{color:var(--sub)}
+.spec-list .v{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wkd-c);font-size:.78rem}
+
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-item summary{padding:15px 18px;cursor:pointer;font-weight:600;font-size:.92rem;display:flex;justify-content:space-between;align-items:center;list-style:none;gap:12px;color:var(--text)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:1.1rem;flex-shrink:0;transition:transform .2s}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item .a{padding:0 18px 16px;color:var(--sub);font-size:.87rem;max-width:64ch}
+
+.cta-hero{background:linear-gradient(155deg,var(--moss),var(--moss-dk));border-radius:14px;padding:30px 28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 20px 50px -20px rgba(54,82,39,.6)}
+.cta-hero::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.06;mix-blend-mode:overlay}
+.cta-hero h2{font-size:1.35rem;font-weight:600;margin-bottom:8px;position:relative}
+.cta-hero p{font-size:.85rem;opacity:.88;line-height:1.6;font-style:italic;margin-bottom:18px;max-width:60ch;position:relative}
+.btn-cta-full{width:100%;max-width:320px;padding:14px;background:var(--paper);color:var(--moss-dk);border:none;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .15s;position:relative;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.btn-cta-full:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.3)}
+
+footer{padding:32px 0;border-top:1.5px solid var(--border)}
+.foot-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
+.foot-inner .mono{font-size:.66rem;color:var(--sub);letter-spacing:.04em}
+.foot-links{display:flex;gap:16px}
+.foot-links a{color:var(--sub);text-decoration:none;font-size:.78rem;transition:color .15s}
+.foot-links a:hover{color:var(--amber)}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<div class="page" id="page-home">
-  <nav class="nav">
-    <div class="nav-left">
-      <div class="nav-title">
-        <h1>🔬 Label Generator</h1>
-        <small>IARI New Delhi Format · A4</small>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <span class="brand-mark">🔬</span>
+      <div class="brand-txt">
+        <h1>Insect Label Generator</h1>
+        <small>IARI Format · A4</small>
       </div>
     </div>
-    <div class="nav-right">
-  <a href="https://www.linkedin.com/in/amtoj-singh-1a8764387?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="ig-link" title="Amtoj Singh on LinkedIn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-      <rect x="2" y="9" width="4" height="12"></rect>
-      <circle cx="4" cy="4" r="2"></circle>
-    </svg>
-  </a>
-</div>
-  </nav>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn-nav-cta" href="app.html" id="navCta">Install App</a>
+    </div>
+  </div>
+</nav>
 
-  <div class="home-scroll">
-    <div class="home-hero">
-      <h2>Insect Collection Labels</h2>
+<main id="main">
+
+  <!-- ═══ HERO ═══ -->
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Free · IARI Format · Works Offline</span>
+        <h1>Insect collection labels, <em>sheet-ready</em> in minutes.</h1>
+        <p class="lede">Set your collector name, localities and collection dates once — the generator lays out up to 120 plain, IARI-format labels on a single A4 sheet, exactly as they'll come out of the printer.</p>
+        <div class="hero-ctas">
+          <a class="btn-primary" href="app.html">Open the Generator →</a>
+          <a class="btn-secondary" href="#how-it-works">See how it works</a>
+        </div>
+        <p class="hero-fineprint">No sign-up, no upload. Install it once and it keeps working without a connection.</p>
+      </div>
+
+      <div class="pin-stage" aria-hidden="true">
+        <div class="spec-card">
+          <span>Sweep net</span><span>Floriculture Garden (IARI)</span><span>13.V.2026</span><span>N. Rawat</span>
+        </div>
+        <div class="spec-card">
+          <span>Light trap</span><span>PAU Entomology Block</span><span>22.III.2026</span><span>S. Kaur</span>
+        </div>
+        <div class="spec-card">
+          <span>Citrus, on leaf</span><span>Pusa Farm, New Delhi</span><span>07.III.2026</span><span>A. Sidhu</span>
+        </div>
+        <div class="spec-card">
+          <span>Yellow pan trap</span><span>PAU Vegetable Farm</span><span>15.III.2026</span><span>D. Menon</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ STAT CARD ═══ -->
+  <section class="wrap" style="margin-bottom:8px">
+    <div class="card stat-card">
+      <div class="card-hdr"><span class="card-hdr-icon">📐</span><span class="card-hdr-txt">Sheet Specification</span></div>
+      <div class="card-body">
+        <div class="stat-cell"><span class="num mono">A4</span><span class="cap">Sheet, 5×24 grid</span></div>
+        <div class="stat-cell"><span class="num mono">40×12mm</span><span class="cap">IARI label size</span></div>
+        <div class="stat-cell"><span class="num mono">120</span><span class="cap">Labels / sheet</span></div>
+        <div class="stat-cell"><span class="num mono">$0</span><span class="cap">Cost to use</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section class="sec" id="how-it-works">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="eyebrow">The workflow</span>
+        <h2>Five steps from blank sheet to printed labels.</h2>
+        <p>The generator walks through a short setup wizard, then opens a full editor where any single label can still be adjusted by hand.</p>
+      </div>
+      <div class="steps">
+        <div class="card">
+          <div class="card-hdr"><span class="card-hdr-icon mono">01</span><span class="card-hdr-txt">Sheet Setup</span></div>
+          <div class="card-body"><p>Choose A4 · 5×24 and the IARI 40×12mm label size — the layout locks to your printer's page before you enter any data.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span class="card-hdr-icon mono">02</span><span class="card-hdr-txt">Collector Name</span></div>
+          <div class="card-body"><p>Enter it once. It's printed as the last line on every label across the whole sheet.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span class="card-hdr-icon mono">03</span><span class="card-hdr-txt">Locations</span></div>
+          <div class="card-body"><p>List one locality per line. Labels cycle through them in order, wrapping to a second line only when a name is too long to fit — the date and collector name never get pushed out of place.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span class="card-hdr-icon mono">04</span><span class="card-hdr-txt">Dates, weighted realistically</span></div>
+          <div class="card-body">
+            <p>Mark each date <span class="chip on">WKD</span> weekend or <span class="chip edit">WRK</span> rare weekday. Weekend dates carry roughly 6× the weight, matching how fieldwork actually clusters — or let Smart Add fill in dates automatically, counting back from today.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span class="card-hdr-icon mono">05</span><span class="card-hdr-txt">Review &amp; Generate</span></div>
+          <div class="card-body"><p>Generating opens the full sheet in the editor, where any individual label can be edited, before saving to history or downloading a print-ready PNG.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURES ═══ -->
+  <section class="sec" id="features">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="eyebrow">Built for real collection sheets</span>
+        <h2>Every label editable, nothing lost when you regenerate.</h2>
+      </div>
+      <div class="feat-grid">
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">👆</span><span class="card-hdr-txt">Tap-to-edit</span></div>
+          <div class="card-body"><p>Tap a single cell in the editor to override its host, locality, date, or name — the rest of the sheet stays untouched.</p></div>
+        </div>
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">🗂️</span><span class="card-hdr-txt">Bulk Edit</span></div>
+          <div class="card-body"><p>Apply changes across a range of labels at once when a whole batch shares the same locality or date.</p></div>
+        </div>
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">📅</span><span class="card-hdr-txt">Smart Add Dates</span></div>
+          <div class="card-body"><p>Tag dates as weekend or workday and let the generator distribute them the way real fieldwork actually falls.</p></div>
+        </div>
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">🕘</span><span class="card-hdr-txt">Sheet History</span></div>
+          <div class="card-body"><p>Save a finished sheet locally on your device and come back to it later — nothing is uploaded to a server.</p></div>
+        </div>
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">📶</span><span class="card-hdr-txt">Works Offline</span></div>
+          <div class="card-body"><p>Add it to your home screen once; after that, the generator runs without an internet connection.</p></div>
+        </div>
+        <div class="card feat-card">
+          <div class="card-hdr"><span class="card-hdr-icon">🖨️</span><span class="card-hdr-txt">PNG Export</span></div>
+          <div class="card-body"><p>Download a print-ready sheet at full resolution, sized and aligned for A4 paper.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FORMAT REFERENCE ═══ -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="eyebrow">Format reference</span>
+        <h2>Standard IARI specimen label, at print size.</h2>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-hdr-icon">📋</span><span class="card-hdr-txt">Specification</span></div>
+        <div class="card-body">
+          <ul class="spec-list">
+            <li><span class="k">Page size</span><span class="v">A4</span></li>
+            <li><span class="k">Grid layout</span><span class="v">5 columns × 24 rows</span></li>
+            <li><span class="k">Label dimensions</span><span class="v">40mm × 12mm</span></li>
+            <li><span class="k">Labels per sheet</span><span class="v">120</span></li>
+            <li><span class="k">Lines per label</span><span class="v">Host · Locality · Date · Collector</span></li>
+            <li><span class="k">Export format</span><span class="v">PNG, full resolution</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="eyebrow">Questions</span>
+        <h2>Frequently asked</h2>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-hdr-icon">💬</span><span class="card-hdr-txt">FAQ</span></div>
+        <div>
+          <details class="faq-item">
+            <summary>What is the IARI insect label format?</summary>
+            <p class="a">IARI format is a standard 40×12mm specimen label used widely in Indian entomology collections. Each label carries up to four lines: host or collection method, locality, date, and collector name.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Do I need to create an account?</summary>
+            <p class="a">No. The generator works directly in your browser — no sign-up, no login, no email required.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Does it work without an internet connection?</summary>
+            <p class="a">Yes. Install it to your home screen as an app and it continues working offline afterward.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I edit one label after generating the whole sheet?</summary>
+            <p class="a">Yes. Tap any label in the editor to override its host, locality, date, or collector name — the rest of the sheet stays untouched.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Is my collection data uploaded anywhere?</summary>
+            <p class="a">No. Saved sheets are kept only in your device's local history. Nothing is sent to a server.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="wrap" style="padding-bottom:64px">
+    <div class="cta-hero">
+      <h2>Your next collection sheet is five steps away.</h2>
       <p>Fill in your details and tap Generate. On the preview page, tap any label to edit it individually before downloading.</p>
+      <a class="btn-cta-full" href="app.html">Open the Generator →</a>
     </div>
+  </section>
 
-    <div class="card">
-      <div class="card-hdr"><span class="card-hdr-icon">👤</span><span class="card-hdr-txt">Collector Name</span></div>
-      <div class="card-body">
-        <label class="lbl">Full Name</label>
-        <input type="text" id="collector" placeholder="A.S. Sidhu">
-      </div>
-    </div>
+</main>
 
-    <div class="card">
-      <div class="card-hdr"><span class="card-hdr-icon">📍</span><span class="card-hdr-txt">Locations</span></div>
-      <div class="card-body">
-        <label class="lbl">One location per line</label>
-        <textarea id="locations" placeholder="Village 1, city&#10;Village 2, city&#10;&so on..."></textarea>
-        <p class="hint">Long names auto-split at first comma onto a second sub-line.</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-hdr"><span class="card-hdr-icon">🌿</span><span class="card-hdr-txt">Host / Method Override</span></div>
-      <div class="card-body">
-        <label class="lbl">Optional — leave blank to auto-detect</label>
-        <input type="text" id="host-override" placeholder="e.g. Sweep net, Wheat, Flowers…">
-        <p class="hint">Blank = auto-matched to location (Citrus for orchards, Light trap for hostel, etc.)</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-hdr"><span class="card-hdr-icon">📅</span><span class="card-hdr-txt">Dates</span></div>
-      <div class="card-body">
-        <p class="hint" style="margin-bottom:9px">
-          <span style="color:var(--wkd-c);font-style:normal;font-weight:700">WKD</span> = weekend (6× weight) ·
-          <span style="color:var(--wrk-c);font-style:normal;font-weight:700">WRK</span> = rare weekday. Tap to toggle.
-        </p>
-        <div class="date-list" id="date-list"></div>
-        <button class="btn-add-date" onclick="addDate()">+ Add Date</button>
-      </div>
+<footer>
+  <div class="wrap foot-inner">
+    <span class="mono">© 2026 Insect Label Generator — IARI Format</span>
+    <div class="foot-links">
+      <a href="app.html">Open Generator</a>
+      <a href="https://www.linkedin.com/in/amtoj-singh-1a8764387?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener">Built by Amtoj Singh</a>
     </div>
   </div>
-
-  <div class="home-footer">
-    <button class="btn-generate" onclick="generateAndGo()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Generate Label Sheet
-    </button>
-  </div>
-</div><div class="page hidden" id="page-preview">
-  <nav class="nav">
-    <div class="nav-left">
-      <button class="nav-back" onclick="goHome()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Home
-      </button>
-      <div class="nav-title">
-        <h1 id="preview-title">Label Sheet</h1>
-        <small>Tap any label to edit</small>
-      </div>
-    </div>
-    <div class="toolbar-right">
-      <button class="btn-dl" onclick="downloadPNG()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        PNG
-      </button>
-    </div>
-  </nav>
-
-  <div class="preview-toolbar">
-    <span class="stats-badge" id="stats-badge"></span>
-    <span class="edited-badge" id="edited-badge"></span>
-  </div>
-
-  <div class="canvas-scroll" id="canvas-scroll">
-    <div class="canvas-wrap" id="canvas-wrap">
-      <canvas id="sheet-canvas"></canvas>
-      <div id="hit-layer"></div>
-    </div>
-  </div>
-</div><div class="overlay" id="overlay" onclick="bgClose(event)">
-  <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-hdr-left">
-        <span class="modal-badge" id="modal-badge">Label #1</span>
-        <h3>Edit Label</h3>
-      </div>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="field-row"><label class="lbl">Line 1 — Host / Collection Method</label><input type="text" id="e-host"></div>
-      <div class="field-row"><label class="lbl">Line 2 — Location (part 1)</label><input type="text" id="e-loc1"></div>
-      <div class="field-row"><label class="lbl">Line 3 — Location (part 2)</label><input type="text" id="e-loc2"></div>
-      <div class="field-row"><label class="lbl">Line 4 — Date</label><input type="text" id="e-date"></div>
-      <div class="field-row"><label class="lbl">Line 5 — Collector Name</label><input type="text" id="e-name"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-reset-one" onclick="resetOne()">Reset</button>
-      <button class="btn-save" onclick="saveLabel()">Save</button>
-    </div>
-  </div>
-</div>
-
-<canvas id="export-canvas" style="display:none"></canvas>
+</footer>
 
 <script>
-// ══════════════════════════════════════════════════════
-// FIXED GRID — always 5 cols × 24 rows = 120 labels
-// matching the Python script output exactly
-// ══════════════════════════════════════════════════════
-const COLS     = 5;
-const ROWS     = 24;
-const TOTAL    = COLS * ROWS;   // 120
+(function(){
+  var cta = document.getElementById('navCta');
+  var deferredPrompt = null;
 
-// A4 @ 300 DPI: 2480 × 3508 px
-const C_W      = 2480;
-const C_H      = 3508;
-const DPI      = 300;
-const MM2PX    = DPI / 25.4;
-
-const MAR_MM   = 5;
-const MAR      = MAR_MM * MM2PX;       // px in canvas coords
-const USABLE_W = C_W - 2 * MAR;
-const USABLE_H = C_H - 2 * MAR;
-const LW       = USABLE_W / COLS;      // label width in canvas px
-const LH       = USABLE_H / ROWS;      // label height in canvas px
-
-// Adjusted Font Size down to 5pt so it doesn't overflow the label borders
-const FS       = 5.0 * (DPI / 72);     
-const LINE_H   = FS * 1.2;             
-const PAD_X    = 1.0 * MM2PX;
-const FONT     = `${FS}px 'Times New Roman','Liberation Serif',Georgia,serif`;
-
-// State
-let labelData = [];   
-let overrides  = {};  
-let editIdx    = null;
-let cssScale   = 1;   
-
-// ══════════════════════════════════════════════════════
-// HOST INFERENCE
-// ══════════════════════════════════════════════════════
-const HOST_MAP = [
-  [/orchard/i,               ["Citrus","Mango","Guava","Mixed collection","Sweep net"]],
-  [/floriculture/i,          ["Flowers","Weeds near Flowers","Sweep net"]],
-  [/landscape|nursery/i,     ["Ornamental plants","Weeds","Sweep net"]],
-  [/vegetable/i,             ["Vegetables","Weeds near Vegetables","Sweep net"]],
-  [/pcp\s*farm/i,            ["Wheat","Maize","Mixed collection"]],
-  [/herbal/i,                ["Weeds","Herbal plants","Sweep net"]],
-  [/hostel/i,                ["Light trap","Mixed collection","Weeds"]],
-  [/mushroom/i,              ["Mixed collection","Light trap","Sweep net"]],
-  [/forest/i,                ["Grasses","Trees","Sweep net"]],
-  [/agrometeor|observatory/i,["Mixed collection","Sweep net","Light trap"]],
-  [/organic/i,               ["Weeds","Mixed collection","Sweep net"]],
-  [/gate/i,                  ["Weeds","Mixed collection","Grasses","Sweep net"]],
-  [/kitchlu|nagar/i,         ["Light trap","Mixed collection","Weeds"]],
-  [/village|vill\b|manooke|patli|khokhar|jawahar|sadda|rampur|sheirkan|rori/i,
-                             ["Weeds","Mixed collection","Grasses","Sweep net"]],
-  [/jaito|chanban|rorikapura|railway/i,["Weeds","Mixed collection","Sweep net"]],
-];
-
-function inferHost(loc, idx) {
-  const ov = document.getElementById('host-override').value.trim();
-  if (ov) return ov;
-  for (const [re, arr] of HOST_MAP) if (re.test(loc)) return arr[idx % arr.length];
-  return ["Sweep net","Mixed collection","Weeds"][idx % 3];
-}
-
-function splitLoc(loc) {
-  const ci = loc.indexOf(',');
-  if (ci < 0) return [loc.trim(), ''];
-  return [loc.slice(0, ci + 1).trim(), loc.slice(ci + 1).trim()];
-}
-
-function buildPool() {
-  const p = [];
-  for (const {d, t} of dates) {
-    if (!d.trim()) continue;
-    const w = t === 'weekend' ? 6 : 1;
-    for (let i = 0; i < w; i++) p.push(d.trim());
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
-  return p;
-}
-
-// ══════════════════════════════════════════════════════
-// GENERATE BASE DATA
-// ══════════════════════════════════════════════════════
-function generateData() {
-  const collector = document.getElementById('collector').value.trim() || 'Collector';
-  const locLines  = document.getElementById('locations').value.trim()
-    .split('\n').map(l => l.trim()).filter(Boolean);
-  const pool = buildPool();
-  if (!locLines.length || !pool.length) return [];
-  const data = [], hIdx = {};
-  for (let i = 0; i < TOTAL; i++) {
-    const loc = locLines[i % locLines.length];
-    const [l1, l2] = splitLoc(loc);
-    if (!hIdx[l1]) hIdx[l1] = 0;
-    const host = inferHost(loc, hIdx[l1]++);
-    const date = pool[(i * 13 + i * 5) % pool.length];
-    data.push({ host, loc1: l1, loc2: l2, date, name: collector });
+  function setOpenState(){
+    cta.textContent = 'Open App';
+    cta.href = 'app.html';
+    cta.onclick = null;
   }
-  return data;
-}
-
-// ══════════════════════════════════════════════════════
-// DRAW — renders ALL labels onto canvas at full res
-// ══════════════════════════════════════════════════════
-function drawSheet(canvas, data) {
-  canvas.width  = C_W;
-  canvas.height = C_H;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, C_W, C_H);
-  ctx.font         = FONT;
-  ctx.fillStyle    = '#000000';
-  ctx.textBaseline = 'top';
-  ctx.strokeStyle  = '#000000';
-  ctx.lineWidth    = 1.5;
-
-  for (let i = 0; i < TOTAL; i++) {
-    const src = overrides[i] || data[i] || {};
-    const col = i % COLS, row = Math.floor(i / COLS);
-    const x0  = MAR + col * LW;
-    const y0  = MAR + row * LH;
-
-    ctx.strokeRect(x0 + 0.75, y0 + 0.75, LW - 1.5, LH - 1.5);
-
-    // Filter out blank lines completely to prevent weird gaps
-    const rawLines = [src.host, src.loc1, src.loc2, src.date, src.name];
-    const validLines = rawLines.filter(l => l && l.toString().trim() !== '');
-
-    // Calculate vertical centering dynamically
-    const totalTextHeight = validLines.length * LINE_H;
-    const startY = y0 + (LH - totalTextHeight) / 2;
-
-    ctx.fillStyle = '#000000';
-    for (let j = 0; j < validLines.length; j++) {
-      let txt = validLines[j];
-      const maxW = LW - 2 * PAD_X;
-      while (txt.length > 2 && ctx.measureText(txt).width > maxW) txt = txt.slice(0, -1);
-      
-      // Draw Left-oriented but vertically centered
-      ctx.fillText(txt, x0 + PAD_X, startY + j * LINE_H);
-    }
-  }
-  // --- ADD WATERMARK START ---
-  ctx.save(); // Save current state
-  ctx.font = "italic 32px 'JetBrains Mono', monospace"; // Small, professional font
-  ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Light grey/transparent
-  ctx.textAlign = "right";
-  ctx.textBaseline = "bottom";
-  
-  // Position it in the bottom-right corner, accounting for the margin
-  const watermarkX = C_W - MAR;
-  const watermarkY = C_H - (MAR / 5);
-  
-  ctx.fillText("Generated on 'imasyyyyy5.github.io/Insect-labels-genrator/'", watermarkX, watermarkY);
-  ctx.restore(); // Restore state
-  // --- ADD WATERMARK END ---
-}
-
-// ══════════════════════════════════════════════════════
-// BUILD PREVIEW 
-// ══════════════════════════════════════════════════════
-function buildPreview() {
-  const scroll = document.getElementById('canvas-scroll');
-  const avail  = scroll.clientWidth - 32;
-
-  cssScale = avail / C_W;
-  const dispW = avail;
-  const dispH = C_H * cssScale;
-
-  const canvas = document.getElementById('sheet-canvas');
-  drawSheet(canvas, labelData);
-  canvas.style.width  = dispW + 'px';
-  canvas.style.height = dispH + 'px';
-
-  const wrap = document.getElementById('canvas-wrap');
-  wrap.style.width  = dispW + 'px';
-  wrap.style.height = dispH + 'px';
-
-  buildHitLayer(dispW, dispH);
-  document.getElementById('stats-badge').textContent =
-    `${COLS} cols × ${ROWS} rows = ${TOTAL} labels`;
-  updateEditedBadge();
-}
-
-// ══════════════════════════════════════════════════════
-// HIT LAYER
-// ══════════════════════════════════════════════════════
-function buildHitLayer(dispW, dispH) {
-  const layer = document.getElementById('hit-layer');
-  layer.innerHTML = '';
-
-  const cW = (USABLE_W / COLS) * cssScale;
-  const cH = (USABLE_H / ROWS) * cssScale;
-  const mX = MAR * cssScale;
-  const mY = MAR * cssScale;
-
-  for (let i = 0; i < TOTAL; i++) {
-    const col = i % COLS, row = Math.floor(i / COLS);
-    const x = mX + col * cW;
-    const y = mY + row * cH;
-
-    const div = document.createElement('div');
-    div.className = 'hit-cell' + (overrides[i] ? ' overridden' : '');
-    div.dataset.idx = i;
-    div.style.cssText = `left:${x}px;top:${y}px;width:${cW}px;height:${cH}px`;
-    div.addEventListener('click', () => openModal(i));
-    div.title = `Label ${i + 1} — click to edit`;
-    layer.appendChild(div);
-  }
-}
-
-function refreshCell(idx) {
-  const src = overrides[idx] || labelData[idx] || {};
-  const canvas = document.getElementById('sheet-canvas');
-  const ctx    = canvas.getContext('2d');
-  const col    = idx % COLS, row = Math.floor(idx / COLS);
-  const x0     = MAR + col * LW;
-  const y0     = MAR + row * LH;
-
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(x0, y0, LW, LH);
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth   = 1.5;
-  ctx.strokeRect(x0 + 0.75, y0 + 0.75, LW - 1.5, LH - 1.5);
-  ctx.font = FONT;
-  ctx.fillStyle = '#000000';
-  ctx.textBaseline = 'top';
-
-  const rawLines = [src.host, src.loc1, src.loc2, src.date, src.name];
-  const validLines = rawLines.filter(l => l && l.toString().trim() !== '');
-  const totalTextHeight = validLines.length * LINE_H;
-  const startY = y0 + (LH - totalTextHeight) / 2;
-
-  for (let j = 0; j < validLines.length; j++) {
-    let txt = validLines[j];
-    const maxW = LW - 2 * PAD_X;
-    while (txt.length > 2 && ctx.measureText(txt).width > maxW) txt = txt.slice(0, -1);
-    ctx.fillText(txt, x0 + PAD_X, startY + j * LINE_H);
+  function setInstallState(){
+    cta.textContent = 'Install App';
+    cta.href = 'app.html';
+    cta.onclick = function(e){
+      if(!deferredPrompt) return; // no supported prompt yet — fall through to normal link
+      e.preventDefault();
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(choice){
+        if(choice.outcome === 'accepted'){
+          deferredPrompt = null;
+          setOpenState();
+        }
+      });
+    };
   }
 
-  const div = document.querySelector(`.hit-cell[data-idx="${idx}"]`);
-  if (div) div.classList.toggle('overridden', !!overrides[idx]);
-  updateEditedBadge();
-}
+  if(isStandalone()){
+    setOpenState();
+  }
 
-function updateEditedBadge() {
-  const n = Object.keys(overrides).length;
-  document.getElementById('edited-badge').textContent = n > 0 ? `${n} label${n > 1 ? 's' : ''} edited` : '';
-}
-
-// ══════════════════════════════════════════════════════
-// MODAL
-// ══════════════════════════════════════════════════════
-function openModal(idx) {
-  editIdx = idx;
-  const src = overrides[idx] || labelData[idx] || {};
-  document.getElementById('modal-badge').textContent = `Label #${idx + 1}`;
-  document.getElementById('e-host').value = src.host || '';
-  document.getElementById('e-loc1').value = src.loc1 || '';
-  document.getElementById('e-loc2').value = src.loc2 || '';
-  document.getElementById('e-date').value = src.date || '';
-  document.getElementById('e-name').value = src.name || '';
-  document.getElementById('overlay').classList.add('open');
-}
-
-function saveLabel() {
-  if (editIdx === null) return;
-  overrides[editIdx] = {
-    host: document.getElementById('e-host').value,
-    loc1: document.getElementById('e-loc1').value,
-    loc2: document.getElementById('e-loc2').value,
-    date: document.getElementById('e-date').value,
-    name: document.getElementById('e-name').value,
-  };
-  refreshCell(editIdx);
-  closeModal();
-}
-
-function resetOne() {
-  if (editIdx === null) return;
-  delete overrides[editIdx];
-  refreshCell(editIdx);
-  closeModal();
-}
-
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  editIdx = null;
-}
-
-function bgClose(e) {
-  if (e.target === document.getElementById('overlay')) closeModal();
-}
-
-// ══════════════════════════════════════════════════════
-// PAGE NAV
-// ══════════════════════════════════════════════════════
-function generateAndGo() {
-  overrides  = {};
-  labelData  = generateData();
-  document.getElementById('preview-title').textContent =
-    document.getElementById('collector').value.trim() || 'Label Sheet';
-  document.getElementById('page-home').classList.add('hidden');
-  document.getElementById('page-preview').classList.remove('hidden');
-  setTimeout(buildPreview, 60);
-}
-
-function goHome() {
-  document.getElementById('page-preview').classList.add('hidden');
-  document.getElementById('page-home').classList.remove('hidden');
-}
-
-// ══════════════════════════════════════════════════════
-// DOWNLOAD PNG
-// ══════════════════════════════════════════════════════
-function downloadPNG() {
-  const c = document.getElementById('export-canvas');
-  drawSheet(c, labelData);
-
-  const name = (document.getElementById('collector').value.trim() || 'labels')
-    .replace(/\s+/g, '_').toLowerCase();
-  c.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `insect_labels_${name}.png`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-  }, 'image/png');
-}
-
-// ══════════════════════════════════════════════════════
-// DATES UI
-// ══════════════════════════════════════════════════════
-let dates = [
-  {d:"01.III.2026",t:"weekend"},{d:"07.III.2026",t:"weekend"},
-  {d:"08.III.2026",t:"weekend"},{d:"10.III.2026",t:"workday"},
-  {d:"14.III.2026",t:"weekend"},{d:"15.III.2026",t:"weekend"},
-  {d:"17.III.2026",t:"workday"},{d:"21.III.2026",t:"weekend"},
-  {d:"22.III.2026",t:"weekend"},{d:"28.III.2026",t:"weekend"},
-  {d:"29.III.2026",t:"weekend"},{d:"04.IV.2026", t:"weekend"},
-  {d:"05.IV.2026", t:"weekend"},{d:"07.IV.2026", t:"workday"},
-  {d:"11.IV.2026", t:"weekend"},{d:"12.IV.2026", t:"weekend"},
-  {d:"18.IV.2026", t:"weekend"},{d:"19.IV.2026", t:"weekend"},
-];
-
-function buildDateUI() {
-  const list = document.getElementById('date-list');
-  list.innerHTML = '';
-  dates.forEach((item, i) => {
-    const row = document.createElement('div'); row.className = 'date-row';
-    const inp = document.createElement('input'); inp.type = 'text'; inp.value = item.d; inp.placeholder = 'DD.MM.YYYY';
-    inp.oninput = () => { dates[i].d = inp.value; };
-    const tag = document.createElement('button'); tag.className = 'tag ' + item.t;
-    tag.textContent = item.t === 'weekend' ? 'WKD' : 'WRK';
-    tag.onclick = () => { dates[i].t = dates[i].t === 'weekend' ? 'workday' : 'weekend'; buildDateUI(); };
-    const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
-    rm.onclick = () => { dates.splice(i, 1); buildDateUI(); };
-    row.append(inp, tag, rm); list.appendChild(row);
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    if(!isStandalone()) setInstallState();
   });
-}
 
-function addDate() { dates.push({ d: '', t: 'weekend' }); buildDateUI(); }
-
-// Resize
-let rT;
-window.addEventListener('resize', () => {
-  clearTimeout(rT);
-  rT = setTimeout(() => {
-    if (!document.getElementById('page-preview').classList.contains('hidden')) buildPreview();
-  }, 250);
-});
-
-// Boot
-buildDateUI();
+  window.addEventListener('appinstalled', function(){
+    deferredPrompt = null;
+    setOpenState();
+  });
+})();
 </script>
 </body>
 </html>
