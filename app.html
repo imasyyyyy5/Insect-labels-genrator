@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google-site-verification" content="Tjf1KCSVqw2DIdWFJZ1Li1UtKZGX9LYnZ6MgSZhLXvs" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Insect Label Generator — IARI</title>
+<meta name="description" content="A free, fast, and easy Insect Label Generator for standard IARI format. Create, edit, and download A4 sheets of entomology collection labels.">
+<meta name="keywords" content="insect label generator, entomology labels, IARI insect labels, agriculture, bug collection, label maker, insect labels, label generator for insect collectio">
+<meta name="author" content="Amtoj Singh">
+<meta name="theme-color" content="#0d0f13">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="shortcut icon" type="image/x-icon" href="icons/favicon.ico">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Insect Labels">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0d11;--bg2:#14171d;--card:#181b21;--card-hi:#1e222a;--border:#282c34;
+  --green:#43a047;--green-dk:#2e7d32;--green-lite:rgba(67,160,71,.14);
+  --amber:#d99a3d;--amber-lite:rgba(217,154,61,.14);--red:#e0574f;--red-lite:rgba(224,87,79,.14);
+  --text:#eae8e2;--sub:#8b8f97;--sub-dim:#5b5f68;
+  --wkd-bg:rgba(133,209,88,.16);--wkd-c:#8fd35f;--wkd-b:rgba(133,209,88,.4);
+  --wrk-bg:rgba(224,163,68,.16);--wrk-c:#e0a344;--wrk-b:rgba(224,163,68,.4);
+  --r:10px;
+}
+html,body{height:100%;font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--text);overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:pan-y}
+::selection{background:var(--green-lite)}
+
+.app{height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+
+/* ── TOPBAR ──────────────────────────── */
+.topbar{flex-shrink:0;background:var(--bg2);border-bottom:1.5px solid var(--border);height:54px;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-txt h1{font-size:.95rem;font-weight:600;color:var(--text)}
+.topbar-txt small{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);display:block;margin-top:2px}
+.ig-link{color:var(--sub);opacity:.85;transition:all .15s;display:flex;align-items:center;justify-content:center;padding:4px}
+.ig-link:hover{opacity:1;color:var(--green);transform:scale(1.08)}
+
+/* ── CONTENT / VIEWS ─────────────────── */
+.content{flex:1;min-height:0;position:relative}
+.view{position:absolute;inset:0;display:none;flex-direction:column;min-height:0}
+.view.active{display:flex}
+
+/* ── EDITOR TOOLBAR ──────────────────── */
+.editor-toolbar{flex-shrink:0;padding:9px 14px;display:flex;flex-direction:column;gap:7px;background:var(--bg2);border-bottom:1.5px solid var(--border)}
+.toolbar-row{display:flex;align-items:center;gap:8px}
+.toolbar-row.wrap{flex-wrap:wrap}
+.format-pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:7px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.05em;cursor:pointer;transition:border-color .12s;white-space:nowrap;min-width:0;flex:1}
+.format-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.format-pill.disabled{opacity:.5}
+.format-pill:hover{border-color:var(--green)}
+.format-pill svg{flex-shrink:0;color:var(--sub)}
+.toolbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
+.stats-badge{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.05em;color:var(--sub);white-space:nowrap}
+.icon-btn{background:none;border:1.5px solid var(--border);color:var(--text);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;flex-shrink:0}
+.icon-btn:hover{border-color:var(--sub)}
+
+.canvas-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:16px;background:var(--bg);touch-action:none;position:relative}
+.canvas-wrap{position:relative;margin:0 auto}
+#sheet-canvas{display:block;box-shadow:0 8px 40px rgba(0,0,0,.5);border-radius:2px}
+#hit-layer{position:absolute;top:0;left:0;width:100%;height:100%}
+.hit-cell{position:absolute;cursor:pointer;transition:background .1s}
+.hit-cell:hover{background:rgba(67,160,71,.16)}
+
+/* ── BULK WIZARD ─────────────────────── */
+.step-progress{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px 4px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s}
+.step-dot.active{background:var(--green);width:22px;border-radius:4px}
+.step-dot.done{background:var(--green-dk)}
+.step-label{flex-shrink:0;text-align:center;padding:6px 16px 10px;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.step-label b{color:var(--text)}
+
+.bulk-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 24px}
+.b-step{display:none;flex-direction:column;gap:14px;animation:fadeIn .28s ease}
+.b-step.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--card);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden}
+.card-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--card-hi)}
+.card-hdr-icon{font-size:.95rem}
+.card-hdr-txt{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);font-weight:500}
+.card-body{padding:14px}
+label.lbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:6px;display:block}
+input[type="text"],textarea{width:100%;padding:10px 11px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--bg2);font-family:'Lora',Georgia,serif;font-size:.88rem;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;line-height:1.5}
+input[type="text"]::placeholder,textarea::placeholder{color:var(--sub-dim)}
+input[type="text"]:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(67,160,71,.16)}
+.date-pick-input{cursor:pointer;caret-color:transparent}
+.date-pick-input:focus{cursor:pointer}
+textarea{resize:vertical;min-height:180px;font-size:.82rem}
+.hint{font-size:.68rem;color:var(--sub);font-style:italic;margin-top:7px;line-height:1.55}
+.warn-text{font-size:.68rem;color:var(--red);margin-top:7px;display:none;font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+.warn-text.show{display:block}
+
+.big-input-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 4px 10px;gap:14px}
+.big-input-icon{font-size:2.1rem;opacity:.85}
+.big-input-wrap input{text-align:center;font-size:1.05rem;padding:14px}
+
+/* Dates */
+.date-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.date-row{display:flex;align-items:center;gap:6px}
+.date-row input{margin:0;flex:1;font-size:.78rem;padding:8px 9px}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:6px 8px;border-radius:5px;border:1px solid;cursor:pointer;letter-spacing:.04em;white-space:nowrap;font-weight:700;transition:all .12s;flex-shrink:0}
+.tag.weekend{background:var(--wkd-bg);color:var(--wkd-c);border-color:var(--wkd-b)}
+.tag.workday{background:var(--wrk-bg);color:var(--wrk-c);border-color:var(--wrk-b)}
+.btn-rm{background:none;border:none;color:var(--red);font-size:1rem;cursor:pointer;opacity:.55;padding:2px 4px;line-height:1;flex-shrink:0;transition:opacity .12s}
+.btn-rm:hover{opacity:1}
+.date-btn-row{display:flex;gap:8px}
+.btn-add-date{flex:1;margin:0;padding:10px;background:none;border:1.5px dashed var(--border);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.08em;color:var(--sub);cursor:pointer;text-transform:uppercase;transition:all .15s}
+.btn-add-date:hover{border-color:var(--green);color:var(--green);background:var(--green-lite)}
+.btn-smart-add{flex:1;margin:0;padding:10px;background:var(--green-lite);border:1.5px dashed var(--green);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.08em;color:var(--green);cursor:pointer;text-transform:uppercase;transition:all .15s}
+.btn-smart-add:hover{background:var(--green);color:#fff}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg2);color:var(--sub);cursor:pointer;transition:all .12s}
+.chip:hover{border-color:var(--green);color:var(--green)}
+
+/* Calendar date picker */
+.cal-modal{max-width:340px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between}
+.cal-nav-btn{background:none;border:1.5px solid var(--border);border-radius:8px;width:34px;height:34px;font-size:1.1rem;line-height:1;color:var(--text);cursor:pointer;transition:all .12s}
+.cal-nav-btn:hover{border-color:var(--green);color:var(--green)}
+.cal-month-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);font-weight:600}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.06em;color:var(--sub);margin-top:2px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:none;border:1.5px solid transparent;border-radius:8px;color:var(--text);font-family:'Lora',Georgia,serif;font-size:.82rem;cursor:pointer;transition:all .12s}
+.cal-day:hover{border-color:var(--green);color:var(--green)}
+.cal-day-pad{cursor:default;pointer-events:none}
+.cal-day-weekend{color:var(--wkd-c)}
+.cal-day-today{border-color:var(--border);font-weight:700}
+.cal-day-selected{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.cal-day-selected:hover{color:#fff}
+
+/* Review step */
+.review-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border)}
+.review-row:last-child{border-bottom:none}
+.review-k{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+.review-v{font-size:.86rem;color:var(--text);text-align:right;max-width:60%}
+
+.bulk-footer{flex-shrink:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;border-top:1.5px solid var(--border);background:var(--bg2)}
+.btn-wiz-back{flex:1;padding:13px;background:none;border:1.5px solid var(--border);border-radius:var(--r);color:var(--sub);font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .12s}
+.btn-wiz-back:disabled{opacity:.3;cursor:default}
+.btn-wiz-back:not(:disabled):hover{border-color:var(--sub);color:var(--text)}
+.btn-wiz-next{flex:2;padding:13px;background:var(--green);border:none;border-radius:var(--r);color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 16px rgba(67,160,71,.28);transition:all .12s}
+.btn-wiz-next:hover{background:var(--green-dk);transform:translateY(-1px)}
+
+/* ── HISTORY ─────────────────────────── */
+.hist-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+.hist-card{display:flex;gap:11px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:9px;align-items:center;transition:border-color .12s}
+.hist-thumb{width:52px;height:auto;max-height:76px;object-fit:contain;border-radius:5px;border:1px solid var(--border);background:#fff;flex-shrink:0}
+.hist-info{flex:1;min-width:0}
+.hist-title{font-size:.85rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-date{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--sub);margin-top:4px;letter-spacing:.03em}
+.hist-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.hist-btn{background:none;border:1.5px solid var(--border);border-radius:7px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);transition:all .12s}
+.hist-btn:hover{border-color:var(--green);color:var(--green)}
+.hist-btn.danger:hover{border-color:var(--red);color:var(--red)}
+.empty-state{margin:auto;text-align:center;color:var(--sub);font-size:.82rem;padding:40px 30px;font-style:italic;line-height:1.6}
+.empty-state .ee-icon{font-size:2rem;display:block;margin-bottom:10px;opacity:.7;font-style:normal}
+
+/* ── BOTTOM NAV ──────────────────────── */
+.bottomnav{flex-shrink:0;background:var(--bg2);border-top:1.5px solid var(--border);display:flex;height:calc(58px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+.bn-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sub);cursor:pointer;transition:color .15s;position:relative}
+.bn-btn svg{width:19px;height:19px}
+.bn-btn span{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase}
+.bn-btn.active{color:var(--green)}
+.bn-btn.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:2.5px;background:var(--green);border-radius:0 0 3px 3px}
+
+/* ── MODAL ───────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:500px){.overlay{align-items:center;padding:16px}}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-width:460px;box-shadow:0 -8px 40px rgba(0,0,0,.5);animation:slideUp .22s cubic-bezier(.4,0,.2,1);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;border:1px solid var(--border);border-bottom:none}
+@media(min-width:500px){.modal{border-radius:12px;box-shadow:0 16px 60px rgba(0,0,0,.6);border-bottom:1px solid var(--border)}}
+@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-hdr{padding:13px 16px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-hdr-left{display:flex;align-items:center;gap:8px}
+.modal-badge{background:var(--amber-lite);color:var(--amber);border:1px solid rgba(217,154,61,.4);font-family:'JetBrains Mono',monospace;font-size:.52rem;padding:3px 8px;border-radius:4px;letter-spacing:.06em}
+.modal-hdr h3{font-size:.92rem;font-weight:600;color:var(--text)}
+.modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--sub);line-height:1;padding:2px 4px;transition:color .12s}
+.modal-close:hover{color:var(--text)}
+.modal-body{overflow-y:auto;flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.field-row{display:flex;flex-direction:column;gap:4px}
+.field-row .lbl{margin-bottom:0}
+.field-row input{margin:0;font-size:.86rem}
+.modal-footer{padding:11px 16px calc(11px + env(safe-area-inset-bottom));border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.btn-cancel{flex:1;padding:11px;background:none;border:1.5px solid var(--border);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;cursor:pointer;color:var(--sub);transition:all .12s}
+.btn-cancel:hover{border-color:var(--sub);color:var(--text)}
+.btn-reset-one{flex:1;padding:11px;background:none;border:1.5px solid var(--red);border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;cursor:pointer;color:var(--red);transition:all .12s}
+.btn-reset-one:hover{background:var(--red);color:#fff}
+.btn-save{flex:2;padding:11px;background:var(--amber);border:none;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;cursor:pointer;color:#1a1305;transition:opacity .12s}
+.btn-save:hover{opacity:.88}
+.btn-save.green{background:var(--green);color:#fff}
+
+/* Action-sheet rows (kebab menu / format list) */
+.action-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 10px;background:none;border:1.5px solid transparent;border-radius:9px;cursor:pointer;color:var(--text);font-family:'Lora',Georgia,serif;font-size:.85rem;text-align:left;transition:all .12s}
+.action-row:hover{background:var(--card-hi)}
+.action-row.active-row{background:var(--green-lite);border-color:var(--green)}
+.ar-left{display:flex;align-items:center;gap:10px;min-width:0}
+.ar-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--card-hi);color:var(--text)}
+.ar-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ar-main small{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--sub);letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-check{color:var(--green);font-weight:700;flex-shrink:0}
+
+/* Toast */
+#toast{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(14px);background:#20242c;border:1px solid var(--border);color:#fff;padding:10px 18px;border-radius:30px;font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:.03em;opacity:0;pointer-events:none;transition:all .25s;z-index:999;box-shadow:0 8px 26px rgba(0,0,0,.5)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── SPLASH SCREEN ────────────────────── */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#000;transition:opacity .3s ease}
+@keyframes blinkSplash{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.94)}}
+.splash-icon{width:76px;height:76px;filter:grayscale(1);animation:blinkSplash 1.2s infinite ease-in-out}
+.splash-icon img{width:100%;height:100%;object-fit:contain;border-radius:16px}
+.splash-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:#6b6f78}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-icon"><img src="icons/icon-192.png" alt="" width="76" height="76"></div>
+  <div class="splash-title">Insect Label Generator</div>
+</div>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-txt">
+      <h1 id="topbar-title">Editor</h1>
+      <small id="topbar-sub">Tap any cell to edit</small>
+    </div>
+    <a href="https://www.linkedin.com/in/amtoj-singh-1a8764387?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="ig-link" title="Amtoj Singh on LinkedIn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+        <rect x="2" y="9" width="4" height="12"></rect>
+        <circle cx="4" cy="4" r="2"></circle>
+      </svg>
+    </a>
+  </header>
+
+  <main class="content">
+
+    <!-- ══════════════ EDITOR ══════════════ -->
+    <section class="view active" id="view-editor">
+      <div class="editor-toolbar">
+        <div class="toolbar-row">
+          <button class="format-pill" onclick="openFormatMenu()" title="Change sheet format">
+            <span class="format-label-text">A4 · 5×24</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="format-pill" onclick="openLabelMenu()" title="Change label type">
+            <span class="label-type-label-text">IARI · 40×12mm</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="toolbar-row">
+          <span class="stats-badge" id="stats-badge">0 / 120 filled</span>
+          <div class="toolbar-right">
+            <button class="icon-btn" onclick="openMenu()" title="Sheet actions">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-scroll" id="canvas-scroll">
+        <div class="canvas-wrap" id="canvas-wrap">
+          <canvas id="sheet-canvas"></canvas>
+          <div id="hit-layer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ BULK WIZARD ══════════════ -->
+    <section class="view" id="view-bulk">
+      <div class="step-progress">
+        <div class="step-dot" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+        <div class="step-dot" data-step="4"></div>
+        <div class="step-dot" data-step="5"></div>
+      </div>
+      <div class="step-label">Step <b id="step-num">1</b> of 5 — <b id="step-name">Collector</b></div>
+
+      <div class="bulk-body">
+
+        <!-- Step 1: Collector -->
+        <div class="b-step" data-step="1">
+          <div class="card">
+            <div class="card-hdr"><span class="card-hdr-icon">🗂️</span><span class="card-hdr-txt">Sheet Setup</span></div>
+            <div class="card-body" style="display:flex;gap:8px;padding:12px">
+              <button class="format-pill" onclick="openFormatMenu()" title="Change sheet format">
+                <span class="format-label-text">A4 · 5×24</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <button class="format-pill" onclick="openLabelMenu()" title="Change label type">
+                <span class="label-type-label-text">IARI · 40×12mm</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="big-input-wrap">
+              <span class="big-input-icon">👤</span>
+              <input type="text" id="b-collector" placeholder="A.S. Sidhu">
+            </div>
+          </div>
+          <p class="hint" style="text-align:center">This name is printed as the last line on every label.</p>
+        </div>
+
+        <!-- Step 2: Locations -->
+        <div class="b-step" data-step="2">
+          <div class="card">
+            <div class="card-hdr"><span class="card-hdr-icon">📍</span><span class="card-hdr-txt">Locations</span></div>
+            <div class="card-body">
+              <label class="lbl">One location per line</label>
+              <textarea id="b-locations" placeholder="Village 1, city&#10;Village 2, city&#10;&so on..."></textarea>
+              <p class="hint">Labels cycle through these in order. A location only wraps onto a second line if it's too long to fit — it never pushes the date or collector name out of place.</p>
+              <p class="warn-text" id="locations-warn">Add at least one location to continue.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Host override -->
+        <div class="b-step" data-step="3">
+          <div class="card">
+            <div class="card-hdr"><span class="card-hdr-icon">🌿</span><span class="card-hdr-txt">Host / Method Override</span></div>
+            <div class="card-body">
+              <label class="lbl">Optional — leave blank to auto-detect</label>
+              <input type="text" id="b-host" placeholder="e.g. Sweep net, Wheat, Flowers…">
+              <p class="hint">Blank = auto-matched to location (Citrus for orchards, Light trap for hostel, etc.)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Dates -->
+        <div class="b-step" data-step="4">
+          <div class="card">
+            <div class="card-hdr"><span class="card-hdr-icon">📅</span><span class="card-hdr-txt">Dates</span></div>
+            <div class="card-body">
+              <p class="hint" style="margin-bottom:10px">
+                <span style="color:var(--wkd-c);font-style:normal;font-weight:700">WKD</span> = weekend (6× weight) ·
+                <span style="color:var(--wrk-c);font-style:normal;font-weight:700">WRK</span> = rare weekday. Tap to toggle.
+              </p>
+              <div class="date-list" id="date-list"></div>
+              <div class="date-btn-row">
+                <button class="btn-add-date" onclick="addDate()">+ Add Date</button>
+                <button class="btn-smart-add" onclick="openSmartModal()">✨ Smart Add</button>
+              </div>
+              <p class="warn-text" id="dates-warn">Add at least one date to continue.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Review -->
+        <div class="b-step" data-step="5">
+          <div class="card">
+            <div class="card-hdr"><span class="card-hdr-icon">✨</span><span class="card-hdr-txt">Review</span></div>
+            <div class="review-row"><span class="review-k">Collector</span><span class="review-v" id="rv-collector">—</span></div>
+            <div class="review-row"><span class="review-k">Locations</span><span class="review-v" id="rv-locations">—</span></div>
+            <div class="review-row"><span class="review-k">Host</span><span class="review-v" id="rv-host">—</span></div>
+            <div class="review-row"><span class="review-k">Dates</span><span class="review-v" id="rv-dates">—</span></div>
+          </div>
+          <p class="hint" style="text-align:center">Generating opens the sheet in the Editor, where you can fine-tune any individual label before saving or downloading.</p>
+        </div>
+
+      </div>
+
+      <div class="bulk-footer">
+        <button class="btn-wiz-back" id="bulk-back" onclick="bulkBack()" disabled>← Back</button>
+        <button class="btn-wiz-next" id="bulk-next" onclick="bulkNext()">Next →</button>
+      </div>
+    </section>
+
+    <!-- ══════════════ HISTORY ══════════════ -->
+    <section class="view" id="view-history">
+      <div class="hist-list" id="history-list"></div>
+    </section>
+
+  </main>
+
+  <nav class="bottomnav">
+    <button class="bn-btn active" data-tab="editor" onclick="switchTab('editor')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Editor</span>
+    </button>
+    <button class="bn-btn" data-tab="bulk" onclick="switchTab('bulk')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      <span>Bulk</span>
+    </button>
+    <button class="bn-btn" data-tab="history" onclick="switchTab('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>History</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- Edit label modal -->
+<div class="overlay" id="overlay" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left">
+        <span class="modal-badge" id="modal-badge">Label #1</span>
+        <h3>Edit Label</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row"><label class="lbl">Line 1 — Host / Collection Method</label><input type="text" id="e-host"></div>
+      <div class="field-row"><label class="lbl">Line 2 — Location</label><input type="text" id="e-loc"></div>
+      <div class="field-row"><label class="lbl">Line 3 — Date</label><input type="text" id="e-date" class="date-pick-input" readonly inputmode="none" placeholder="Tap to pick a date"></div>
+      <div class="field-row"><label class="lbl">Line 4 — Collector Name</label><input type="text" id="e-name"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-reset-one" onclick="resetOne()">Reset</button>
+      <button class="btn-save" onclick="saveLabel()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save-to-history modal -->
+<div class="overlay" id="save-overlay" onclick="bgCloseSave(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Save Sheet</h3></div>
+      <button class="modal-close" onclick="closeSaveModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row"><label class="lbl">Sheet Name</label><input type="text" id="save-title" placeholder="e.g. March Field Collection"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSaveModal()">Cancel</button>
+      <button class="btn-save green" onclick="confirmSave()">Save to History</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet actions (kebab) menu -->
+<div class="overlay" id="menu-overlay" onclick="bgCloseMenu(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Sheet Actions</h3></div>
+      <button class="modal-close" onclick="closeMenu()">×</button>
+    </div>
+    <div class="modal-body" style="padding:10px">
+      <button class="action-row" id="install-app-row" style="display:none" onclick="installApp()">
+        <span class="ar-left">
+          <span class="ar-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+          <span class="ar-main">Install App<small>Add to home screen, works offline</small></span>
+        </span>
+      </button>
+      <button class="action-row" onclick="closeMenu();newSheet();">
+        <span class="ar-left">
+          <span class="ar-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <span class="ar-main">New Blank Sheet<small>Clear the current sheet</small></span>
+        </span>
+      </button>
+      <button class="action-row" onclick="closeMenu();openSaveModal();">
+        <span class="ar-left">
+          <span class="ar-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></span>
+          <span class="ar-main">Save to History<small>Keep this sheet on this device</small></span>
+        </span>
+      </button>
+      <button class="action-row" onclick="closeMenu();downloadPNG();">
+        <span class="ar-left">
+          <span class="ar-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+          <span class="ar-main">Download PNG<small>Full-resolution print file</small></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet format menu -->
+<div class="overlay" id="format-overlay" onclick="bgCloseFormat(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Sheet Format</h3></div>
+      <button class="modal-close" onclick="closeFormatMenu()">×</button>
+    </div>
+    <div class="modal-body" id="format-list" style="padding:10px"></div>
+  </div>
+</div>
+
+<!-- Label type menu -->
+<div class="overlay" id="label-overlay" onclick="bgCloseLabel(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Label Type</h3></div>
+      <button class="modal-close" onclick="closeLabelMenu()">×</button>
+    </div>
+    <div class="modal-body" id="label-list" style="padding:10px"></div>
+  </div>
+</div>
+
+<!-- In-app confirm dialog — window.confirm() is blocked inside the
+     sandboxed preview iframe, so every "are you sure?" prompt in the
+     app routes through this instead. -->
+<div class="overlay" id="confirm-overlay" onclick="confirmBgClose(event)">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3 id="confirm-title">Please Confirm</h3></div>
+      <button class="modal-close" onclick="closeConfirm(false)">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-message" style="font-size:.86rem;color:var(--text);margin:0;line-height:1.5">—</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeConfirm(false)">Cancel</button>
+      <button class="btn-save green" id="confirm-ok-btn" onclick="closeConfirm(true)">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Smart Add Dates modal -->
+<div class="overlay" id="smart-overlay" onclick="bgCloseSmart(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Smart Add Dates</h3></div>
+      <button class="modal-close" onclick="closeSmartModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint" style="margin:0">From how many days are you collecting insects? We'll fill in dates counting back from today — Saturdays and Sundays will naturally appear more often.</p>
+      <div class="field-row"><label class="lbl">Number of Days</label><input type="text" inputmode="numeric" id="smart-days" placeholder="e.g. 30"></div>
+      <div class="chip-row" id="smart-chips"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSmartModal()">Cancel</button>
+      <button class="btn-save green" onclick="confirmSmartAdd()">Add Dates</button>
+    </div>
+  </div>
+</div>
+
+<!-- Date picker (calendar) modal — dates are always chosen here, never typed -->
+<div class="overlay" id="cal-overlay" onclick="calBgClose(event)">
+  <div class="modal cal-modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-left"><h3>Select Date</h3></div>
+      <button class="modal-close" onclick="closeCalendar()">×</button>
+    </div>
+    <div class="modal-body" style="gap:10px">
+      <div class="cal-nav">
+        <button type="button" class="cal-nav-btn" onclick="calChangeMonth(-1)" aria-label="Previous month">‹</button>
+        <div class="cal-month-label" id="cal-month-label">—</div>
+        <button type="button" class="cal-nav-btn" onclick="calChangeMonth(1)" aria-label="Next month">›</button>
+      </div>
+      <div class="cal-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeCalendar()">Cancel</button>
+      <button class="btn-save green" onclick="calSelectToday()">Today</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<canvas id="export-canvas" style="display:none"></canvas>
+
+<script>
+// ══════════════════════════════════════════════════════
+// PAPER / GRID GEOMETRY — recomputed per selected format
+// ══════════════════════════════════════════════════════
+const DPI     = 300;
+const MM2PX   = DPI / 25.4;
+const MAR_MM  = 5;
+
+const PAPERS = {
+  a4:     { label:'A4',     wmm:210,   hmm:297   },
+  a3:     { label:'A3',     wmm:297,   hmm:420   },
+  a5:     { label:'A5',     wmm:148,   hmm:210   },
+  letter: { label:'Letter', wmm:215.9, hmm:279.4 },
+  legal:  { label:'Legal',  wmm:215.9, hmm:355.6 },
+};
+let currentPaper = 'a4';
+
+// Baseline physical label size — selectable via "Label Type" (see LABEL_TYPES
+// below). Dimensions are curated presets, not all official published specs;
+// IARI is the app's original default and stays pixel-identical to before.
+let currentLabelType = 'iari';
+
+let COLS, ROWS, TOTAL, C_W, C_H, MAR, USABLE_W, USABLE_H, LW, LH;
+
+const LABEL_TYPES = {
+  iari:        { label: 'IARI Standard (India)',       abbr: 'IARI',       wmm: (210 - 2 * MAR_MM) / 5, hmm: (297 - 2 * MAR_MM) / 24 },
+  icar_pau:    { label: 'ICAR / PAU (India)',           abbr: 'ICAR-PAU',   wmm: 38, hmm: 10 },
+  euro:        { label: 'European Standard',            abbr: 'Euro',       wmm: 30, hmm: 10 },
+  nhm:         { label: 'Natural History Museum (UK)',  abbr: 'NHM',        wmm: 20, hmm: 10 },
+  cornell:     { label: 'Cornell-style (US)',            abbr: 'Cornell',    wmm: 25, hmm: 8  },
+  smithsonian: { label: 'Smithsonian-style (US)',        abbr: 'Smithsonian',wmm: 22, hmm: 9  },
+  large:       { label: 'Large / Wide',                  abbr: 'Large',      wmm: 50, hmm: 15 },
+};
+let LABEL_W_MM = LABEL_TYPES[currentLabelType].wmm;
+let LABEL_H_MM = LABEL_TYPES[currentLabelType].hmm;
+
+function previewGrid(key) {
+  const p = PAPERS[key];
+  const cols = Math.max(1, Math.floor((p.wmm - 2 * MAR_MM) / LABEL_W_MM));
+  const rows = Math.max(1, Math.floor((p.hmm - 2 * MAR_MM) / LABEL_H_MM));
+  return { cols, rows };
+}
+
+// Grid preview for a given label type, using whichever paper is active
+function previewGridForLabel(key) {
+  const lt = LABEL_TYPES[key];
+  const p = PAPERS[currentPaper];
+  const cols = Math.max(1, Math.floor((p.wmm - 2 * MAR_MM) / lt.wmm));
+  const rows = Math.max(1, Math.floor((p.hmm - 2 * MAR_MM) / lt.hmm));
+  return { cols, rows };
+}
+
+function applyPaperGeometry(key) {
+  const p = PAPERS[key];
+  C_W = Math.round(p.wmm * MM2PX);
+  C_H = Math.round(p.hmm * MM2PX);
+  MAR = MAR_MM * MM2PX;
+  const g = previewGrid(key);
+  COLS = g.cols; ROWS = g.rows; TOTAL = COLS * ROWS;
+  USABLE_W = C_W - 2 * MAR;
+  USABLE_H = C_H - 2 * MAR;
+  LW = USABLE_W / COLS;
+  LH = USABLE_H / ROWS;
+}
+
+const FS     = 6.0 * (DPI / 72);   // IARI standard: exactly 6pt, no shrinking
+const LINE_H = FS * 1.2;
+const PAD_X  = 1.0 * MM2PX;
+const PAD_Y  = 1.0 * MM2PX;
+const FONT   = `${FS}px 'Times New Roman','Liberation Serif',Georgia,serif`;
+
+const LS_KEY = 'ilg_sheets_v1';
+
+// State
+let labelData = [];    // base data (from bulk-generate or loaded history)
+let overrides = {};    // per-index manual edits
+let editIdx   = null;
+
+// Zoom / pan state
+let baseDispW = 0, baseDispH = 0, baseCssScale = 1, cssScale = 1, zoomFactor = 1;
+
+// ══════════════════════════════════════════════════════
+// TAB / VIEW SWITCHING
+// ══════════════════════════════════════════════════════
+const TAB_META = {
+  editor:  { title: 'Editor',          sub: 'Tap any cell to edit' },
+  bulk:    { title: 'Bulk Generator',  sub: null },
+  history: { title: 'History',         sub: 'Saved label sheets' },
+};
+
+function switchTab(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+  document.querySelectorAll('.bn-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.getElementById('topbar-title').textContent = TAB_META[name].title;
+  if (name === 'bulk') {
+    updateStepUI();
+  } else {
+    document.getElementById('topbar-sub').textContent = TAB_META[name].sub;
+  }
+  if (name === 'editor') setTimeout(buildPreview, 50);
+  if (name === 'history') renderHistory();
+}
+
+// ══════════════════════════════════════════════════════
+// HOST INFERENCE
+// ══════════════════════════════════════════════════════
+const HOST_MAP = [
+  [/orchard/i,               ["Citrus","Mango","Guava","Mixed collection","Sweep net"]],
+  [/floriculture/i,          ["Flowers","Weeds near Flowers","Sweep net"]],
+  [/landscape|nursery/i,     ["Ornamental plants","Weeds","Sweep net"]],
+  [/vegetable/i,             ["Vegetables","Weeds near Vegetables","Sweep net"]],
+  [/pcp\s*farm/i,            ["Wheat","Maize","Mixed collection"]],
+  [/herbal/i,                ["Weeds","Herbal plants","Sweep net"]],
+  [/hostel/i,                ["Light trap","Mixed collection","Weeds"]],
+  [/mushroom/i,              ["Mixed collection","Light trap","Sweep net"]],
+  [/forest/i,                ["Grasses","Trees","Sweep net"]],
+  [/agrometeor|observatory/i,["Mixed collection","Sweep net","Light trap"]],
+  [/organic/i,               ["Weeds","Mixed collection","Sweep net"]],
+  [/gate/i,                  ["Weeds","Mixed collection","Grasses","Sweep net"]],
+  [/kitchlu|nagar/i,         ["Light trap","Mixed collection","Weeds"]],
+  [/village|vill\b|manooke|patli|khokhar|jawahar|sadda|rampur|sheirkan|rori/i,
+                             ["Weeds","Mixed collection","Grasses","Sweep net"]],
+  [/jaito|chanban|rorikapura|railway/i,["Weeds","Mixed collection","Sweep net"]],
+];
+
+function inferHost(loc, idx) {
+  const ov = document.getElementById('b-host').value.trim();
+  if (ov) return ov;
+  for (const [re, arr] of HOST_MAP) if (re.test(loc)) return arr[idx % arr.length];
+  return ["Sweep net","Mixed collection","Weeds"][idx % 3];
+}
+
+function getLocationsList() {
+  return document.getElementById('b-locations').value.trim()
+    .split('\n').map(l => l.trim()).filter(Boolean);
+}
+
+function buildPool() {
+  const p = [];
+  for (const {d, t} of dates) {
+    if (!d.trim()) continue;
+    const w = t === 'weekend' ? 6 : 1;
+    for (let i = 0; i < w; i++) p.push(d.trim());
+  }
+  return p;
+}
+
+// ══════════════════════════════════════════════════════
+// GENERATE BASE DATA (bulk)
+// ══════════════════════════════════════════════════════
+function generateData() {
+  const collector = document.getElementById('b-collector').value.trim() || 'Collector';
+  const locLines  = getLocationsList();
+  const pool = buildPool();
+  if (!locLines.length || !pool.length) return [];
+  const data = [], hIdx = {};
+  for (let i = 0; i < TOTAL; i++) {
+    const loc = locLines[i % locLines.length];
+    if (!hIdx[loc]) hIdx[loc] = 0;
+    const host = inferHost(loc, hIdx[loc]++);
+    const date = pool[(i * 13 + i * 5) % pool.length];
+    data.push({ host, loc, date, name: collector });
+  }
+  return data;
+}
+
+// Truncates text to fit maxW, adding an ellipsis if it had to cut —
+// used for every line so nothing can ever silently overflow a label.
+function truncateToWidth(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  const ell = '…';
+  let cut = text.length;
+  while (cut > 0 && ctx.measureText(text.slice(0, cut) + ell).width > maxW) cut--;
+  return text.slice(0, cut) + ell;
+}
+
+// Builds the strict IARI 4-line order: Host, Location, Date, Collector.
+// Location stays on ONE line per the spec's sample labels — every paper
+// format's label height is sized for exactly 4 lines, so a long location
+// is truncated (with an ellipsis) rather than wrapped, which would push
+// text past the bottom of the label into the row below.
+function getRenderLines(src) {
+  const lines = [];
+  if (src.host && src.host.toString().trim()) lines.push(src.host.toString().trim());
+  if (src.loc && src.loc.toString().trim()) lines.push(src.loc.toString().trim());
+  if (src.date && src.date.toString().trim()) lines.push(src.date.toString().trim());
+  if (src.name && src.name.toString().trim()) lines.push(src.name.toString().trim());
+  return lines;
+}
+
+// ══════════════════════════════════════════════════════
+// DRAW — renders ALL labels onto canvas at full res
+// ══════════════════════════════════════════════════════
+function drawSheet(canvas, data) {
+  canvas.width  = C_W;
+  canvas.height = C_H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, C_W, C_H);
+  ctx.font         = FONT;
+  ctx.fillStyle    = '#000000';
+  ctx.textBaseline = 'top';
+  ctx.strokeStyle  = '#000000';
+  ctx.lineWidth    = 1.5;
+
+  for (let i = 0; i < TOTAL; i++) {
+    const src = overrides[i] || data[i] || {};
+    const col = i % COLS, row = Math.floor(i / COLS);
+    const x0  = MAR + col * LW;
+    const y0  = MAR + row * LH;
+
+    ctx.strokeRect(x0 + 0.75, y0 + 0.75, LW - 1.5, LH - 1.5);
+
+    const maxW = LW - 2 * PAD_X;
+    const lines = getRenderLines(src);
+
+    ctx.fillStyle = '#000000';
+    for (let j = 0; j < lines.length; j++) {
+      const txt = truncateToWidth(ctx, lines[j], maxW);
+      ctx.fillText(txt, x0 + PAD_X, y0 + PAD_Y + j * LINE_H);
+    }
+  }
+
+  ctx.save();
+  ctx.font = "italic 32px 'JetBrains Mono', monospace";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "bottom";
+  const watermarkX = C_W - MAR;
+  const watermarkY = C_H - (MAR / 5);
+  ctx.fillText("Generated on 'imasyyyyy5.github.io/Insect-labels-genrator/'", watermarkX, watermarkY);
+  ctx.restore();
+}
+
+// ══════════════════════════════════════════════════════
+// BUILD PREVIEW (also resets zoom to fit-width)
+// ══════════════════════════════════════════════════════
+function buildPreview() {
+  const scroll = document.getElementById('canvas-scroll');
+  if (!scroll || scroll.clientWidth === 0) return;
+  const avail  = scroll.clientWidth - 32;
+
+  baseDispW = avail;
+  baseDispH = C_H * (avail / C_W);
+  baseCssScale = avail / C_W;
+  zoomFactor = 1;
+
+  const canvas = document.getElementById('sheet-canvas');
+  drawSheet(canvas, labelData);
+  applyZoomSize();
+  updateStats();
+}
+
+function applyZoomSize(rebuildHit = true) {
+  const dispW = baseDispW * zoomFactor;
+  const dispH = baseDispH * zoomFactor;
+  cssScale = baseCssScale * zoomFactor;
+
+  const canvas = document.getElementById('sheet-canvas');
+  canvas.style.width  = dispW + 'px';
+  canvas.style.height = dispH + 'px';
+
+  const wrap = document.getElementById('canvas-wrap');
+  wrap.style.width  = dispW + 'px';
+  wrap.style.height = dispH + 'px';
+
+  if (rebuildHit) buildHitLayer(dispW, dispH);
+}
+
+function filledCount() {
+  let n = 0;
+  for (let i = 0; i < TOTAL; i++) {
+    const src = overrides[i] || labelData[i] || {};
+    if (['host','loc','date','name'].some(k => src[k] && src[k].toString().trim())) n++;
+  }
+  return n;
+}
+
+function hasAnyContent() { return filledCount() > 0; }
+
+function updateStats() {
+  document.getElementById('stats-badge').textContent = `${filledCount()} / ${TOTAL} filled`;
+}
+
+// ══════════════════════════════════════════════════════
+// HIT LAYER
+// ══════════════════════════════════════════════════════
+function buildHitLayer(dispW, dispH) {
+  const layer = document.getElementById('hit-layer');
+  layer.innerHTML = '';
+
+  const cW = (USABLE_W / COLS) * cssScale;
+  const cH = (USABLE_H / ROWS) * cssScale;
+  const mX = MAR * cssScale;
+  const mY = MAR * cssScale;
+
+  for (let i = 0; i < TOTAL; i++) {
+    const col = i % COLS, row = Math.floor(i / COLS);
+    const x = mX + col * cW;
+    const y = mY + row * cH;
+
+    const div = document.createElement('div');
+    div.className = 'hit-cell';
+    div.dataset.idx = i;
+    div.style.cssText = `left:${x}px;top:${y}px;width:${cW}px;height:${cH}px`;
+    div.addEventListener('click', () => handleCellTap(i));
+    div.title = `Label ${i + 1} — tap to edit, double-tap to zoom`;
+    layer.appendChild(div);
+  }
+}
+
+function refreshCell(idx) {
+  const src = overrides[idx] || labelData[idx] || {};
+  const canvas = document.getElementById('sheet-canvas');
+  const ctx    = canvas.getContext('2d');
+  const col    = idx % COLS, row = Math.floor(idx / COLS);
+  const x0     = MAR + col * LW;
+  const y0     = MAR + row * LH;
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(x0, y0, LW, LH);
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth   = 1.5;
+  ctx.strokeRect(x0 + 0.75, y0 + 0.75, LW - 1.5, LH - 1.5);
+  ctx.font = FONT;
+  ctx.fillStyle = '#000000';
+  ctx.textBaseline = 'top';
+
+  const maxW = LW - 2 * PAD_X;
+  const lines = getRenderLines(src);
+
+  for (let j = 0; j < lines.length; j++) {
+    const txt = truncateToWidth(ctx, lines[j], maxW);
+    ctx.fillText(txt, x0 + PAD_X, y0 + PAD_Y + j * LINE_H);
+  }
+
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════
+// EDIT MODAL
+// ══════════════════════════════════════════════════════
+function openModal(idx) {
+  editIdx = idx;
+  const src = overrides[idx] || labelData[idx] || {};
+  document.getElementById('modal-badge').textContent = `Label #${idx + 1}`;
+  document.getElementById('e-host').value = src.host || '';
+  document.getElementById('e-loc').value = src.loc || '';
+  document.getElementById('e-date').value = src.date || '';
+  document.getElementById('e-name').value = src.name || '';
+  document.getElementById('overlay').classList.add('open');
+}
+
+function saveLabel() {
+  if (editIdx === null) return;
+  overrides[editIdx] = {
+    host: document.getElementById('e-host').value,
+    loc: document.getElementById('e-loc').value,
+    date: document.getElementById('e-date').value,
+    name: document.getElementById('e-name').value,
+  };
+  refreshCell(editIdx);
+  closeModal();
+}
+
+function resetOne() {
+  if (editIdx === null) return;
+  delete overrides[editIdx];
+  refreshCell(editIdx);
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  editIdx = null;
+}
+
+function bgClose(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+// ══════════════════════════════════════════════════════
+// IN-APP CONFIRM DIALOG (replaces window.confirm(), which is
+// blocked inside the sandboxed preview iframe and would silently
+// no-op — making every confirm-gated action look broken)
+// ══════════════════════════════════════════════════════
+let confirmCallback = null;
+
+function showConfirm(message, onConfirm, opts) {
+  opts = opts || {};
+  confirmCallback = onConfirm;
+  document.getElementById('confirm-title').textContent = opts.title || 'Please Confirm';
+  document.getElementById('confirm-message').textContent = message;
+  const okBtn = document.getElementById('confirm-ok-btn');
+  okBtn.textContent = opts.okLabel || (opts.danger ? 'Delete' : 'Continue');
+  okBtn.className = opts.danger ? 'btn-save' : 'btn-save green';
+  if (opts.danger) { okBtn.style.background = 'var(--red)'; okBtn.style.color = '#fff'; }
+  else { okBtn.style.background = ''; okBtn.style.color = ''; }
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function closeConfirm(confirmed) {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  const cb = confirmCallback;
+  confirmCallback = null;
+  if (confirmed && cb) cb();
+}
+
+function confirmBgClose(e) {
+  if (e.target === document.getElementById('confirm-overlay')) closeConfirm(false);
+}
+
+// ══════════════════════════════════════════════════════
+// EDITOR ACTIONS — New / Save / Download
+// ══════════════════════════════════════════════════════
+function newSheet() {
+  const doIt = () => {
+    labelData = [];
+    overrides = {};
+    buildPreview();
+    showToast('Blank sheet ready');
+  };
+  if (hasAnyContent()) {
+    showConfirm('Start a new blank sheet? Unsaved changes will be lost.', doIt);
+  } else {
+    doIt();
+  }
+}
+
+function currentCollectorName() {
+  for (let i = 0; i < TOTAL; i++) {
+    const src = overrides[i] || labelData[i];
+    if (src && src.name && src.name.trim()) return src.name.trim();
+  }
+  return 'labels';
+}
+
+function downloadPNG() {
+  const c = document.getElementById('export-canvas');
+  drawSheet(c, labelData);
+  const name = currentCollectorName().replace(/\s+/g, '_').toLowerCase();
+  c.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `insect_labels_${name}.png`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }, 'image/png');
+}
+
+// ══════════════════════════════════════════════════════
+// SHEET FORMAT MENU
+// ══════════════════════════════════════════════════════
+function renderFormatList() {
+  const wrap = document.getElementById('format-list');
+  wrap.innerHTML = Object.keys(PAPERS).map(key => {
+    const p = PAPERS[key], g = previewGrid(key);
+    const active = key === currentPaper;
+    return `<button class="action-row ${active ? 'active-row' : ''}" onclick="setPaper('${key}')">
+      <span class="ar-main">
+        <span>${p.label}</span>
+        <small>${p.wmm}×${p.hmm} mm · ${g.cols}×${g.rows} = ${g.cols * g.rows} labels</small>
+      </span>
+      ${active ? '<span class="ar-check">✓</span>' : ''}
+    </button>`;
+  }).join('');
+}
+
+function updateFormatLabel() {
+  const txt = `${PAPERS[currentPaper].label} · ${COLS}×${ROWS}`;
+  document.querySelectorAll('.format-label-text').forEach(el => el.textContent = txt);
+}
+
+function openFormatMenu() { renderFormatList(); document.getElementById('format-overlay').classList.add('open'); }
+function closeFormatMenu() { document.getElementById('format-overlay').classList.remove('open'); }
+function bgCloseFormat(e) { if (e.target === document.getElementById('format-overlay')) closeFormatMenu(); }
+
+function setPaper(key, opts) {
+  opts = opts || {};
+  if (key === currentPaper) { closeFormatMenu(); return; }
+  const doIt = () => {
+    currentPaper = key;
+    applyPaperGeometry(key);
+    labelData = [];
+    overrides = {};
+    updateFormatLabel();
+    closeFormatMenu();
+    buildPreview();
+    showToast(`Switched to ${PAPERS[key].label}`);
+  };
+  if (!opts.skipConfirm && hasAnyContent()) {
+    showConfirm('Switching sheet format starts a new blank sheet. Continue?', doIt);
+  } else {
+    doIt();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// LABEL TYPE MENU — disabled while the sheet has any content,
+// since changing physical label dimensions reflows the whole
+// grid and there's no sane way to preserve existing labels.
+// ══════════════════════════════════════════════════════
+function renderLabelList() {
+  const wrap = document.getElementById('label-list');
+  wrap.innerHTML = Object.keys(LABEL_TYPES).map(key => {
+    const lt = LABEL_TYPES[key], g = previewGridForLabel(key);
+    const active = key === currentLabelType;
+    return `<button class="action-row ${active ? 'active-row' : ''}" onclick="setLabelType('${key}')">
+      <span class="ar-main">
+        <span>${lt.label}</span>
+        <small>${lt.wmm.toFixed(1)}×${lt.hmm.toFixed(1)} mm · ${g.cols}×${g.rows} = ${g.cols * g.rows} labels on ${PAPERS[currentPaper].label}</small>
+      </span>
+      ${active ? '<span class="ar-check">✓</span>' : ''}
+    </button>`;
+  }).join('');
+}
+
+function updateLabelTypeLabel() {
+  const lt = LABEL_TYPES[currentLabelType];
+  const txt = `${lt.abbr} · ${Math.round(lt.wmm)}×${Math.round(lt.hmm)}mm`;
+  document.querySelectorAll('.label-type-label-text').forEach(el => el.textContent = txt);
+}
+
+function openLabelMenu() {
+  if (hasAnyContent()) {
+    showToast('Clear the sheet first to change label type');
+    return;
+  }
+  renderLabelList();
+  document.getElementById('label-overlay').classList.add('open');
+}
+function closeLabelMenu() { document.getElementById('label-overlay').classList.remove('open'); }
+function bgCloseLabel(e) { if (e.target === document.getElementById('label-overlay')) closeLabelMenu(); }
+
+function setLabelType(key) {
+  if (key === currentLabelType) { closeLabelMenu(); return; }
+  if (hasAnyContent()) {
+    showToast('Clear the sheet first to change label type');
+    closeLabelMenu();
+    return;
+  }
+  currentLabelType = key;
+  LABEL_W_MM = LABEL_TYPES[key].wmm;
+  LABEL_H_MM = LABEL_TYPES[key].hmm;
+  applyPaperGeometry(currentPaper);
+  labelData = [];
+  overrides = {};
+  updateFormatLabel();
+  updateLabelTypeLabel();
+  closeLabelMenu();
+  buildPreview();
+  showToast(`Label type set to ${LABEL_TYPES[key].label}`);
+}
+
+// ══════════════════════════════════════════════════════
+// KEBAB MENU
+// ══════════════════════════════════════════════════════
+function openMenu() { document.getElementById('menu-overlay').classList.add('open'); }
+function closeMenu() { document.getElementById('menu-overlay').classList.remove('open'); }
+function bgCloseMenu(e) { if (e.target === document.getElementById('menu-overlay')) closeMenu(); }
+
+// ══════════════════════════════════════════════════════
+// SAVE TO HISTORY
+// ══════════════════════════════════════════════════════
+function openSaveModal() {
+  if (!hasAnyContent()) { showToast("Nothing to save yet — add some labels first"); return; }
+  const guess = currentCollectorName();
+  document.getElementById('save-title').value = guess === 'labels' ? '' : guess + ' — ' + new Date().toLocaleDateString();
+  document.getElementById('save-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('save-title').focus(), 150);
+}
+function closeSaveModal() { document.getElementById('save-overlay').classList.remove('open'); }
+function bgCloseSave(e) { if (e.target === document.getElementById('save-overlay')) closeSaveModal(); }
+
+function makeThumb() {
+  const src = document.getElementById('sheet-canvas');
+  const c = document.createElement('canvas');
+  c.width = 160;
+  c.height = Math.round(160 * C_H / C_W);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(src, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.62);
+}
+
+function loadSheets() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch (e) { return []; }
+}
+function saveSheets(arr) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); return true; }
+  catch (e) { showToast('Storage full — delete an old sheet first'); return false; }
+}
+
+function confirmSave() {
+  const title = document.getElementById('save-title').value.trim() || 'Untitled Sheet';
+  const flattened = [];
+  for (let i = 0; i < TOTAL; i++) flattened.push(overrides[i] || labelData[i] || {});
+  const thumb = makeThumb();
+  const sheets = loadSheets();
+  sheets.unshift({ id: Date.now(), title, createdAt: new Date().toISOString(), paper: currentPaper, labelType: currentLabelType, labelData: flattened, thumb });
+  if (saveSheets(sheets)) {
+    closeSaveModal();
+    showToast('Saved to history');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// HISTORY
+// ══════════════════════════════════════════════════════
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) +
+    ' · ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
+function countFilled(arr) {
+  return arr.filter(src => ['host','loc','date','name'].some(k => src[k] && src[k].toString().trim())).length;
+}
+
+function renderHistory() {
+  const sheets = loadSheets();
+  const wrap = document.getElementById('history-list');
+  if (!sheets.length) {
+    wrap.innerHTML = `<div class="empty-state"><span class="ee-icon">🗂️</span>No saved sheets yet.<br>Sheets you save from the Editor will show up here.</div>`;
+    return;
+  }
+  wrap.innerHTML = sheets.map(s => {
+    const paperLabel = (PAPERS[s.paper] || PAPERS.a4).label;
+    const labelTypeAbbr = (LABEL_TYPES[s.labelType] || LABEL_TYPES.iari).abbr;
+    return `
+    <div class="hist-card">
+      <img src="${s.thumb}" class="hist-thumb" alt="">
+      <div class="hist-info">
+        <div class="hist-title">${escapeHtml(s.title)}</div>
+        <div class="hist-date">${formatDate(s.createdAt)} · ${paperLabel} · ${labelTypeAbbr} · ${countFilled(s.labelData)} labels</div>
+      </div>
+      <div class="hist-actions">
+        <button class="hist-btn" onclick="loadSheetFromHistory(${s.id})" title="Open in Editor">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
+        <button class="hist-btn danger" onclick="deleteSheet(${s.id})" title="Delete">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadSheetFromHistory(id) {
+  const sheets = loadSheets();
+  const s = sheets.find(x => x.id === id);
+  if (!s) return;
+  currentPaper = s.paper && PAPERS[s.paper] ? s.paper : 'a4';
+  currentLabelType = s.labelType && LABEL_TYPES[s.labelType] ? s.labelType : 'iari';
+  LABEL_W_MM = LABEL_TYPES[currentLabelType].wmm;
+  LABEL_H_MM = LABEL_TYPES[currentLabelType].hmm;
+  applyPaperGeometry(currentPaper);
+  updateFormatLabel();
+  updateLabelTypeLabel();
+  labelData = s.labelData.map(o => ({ ...o }));
+  overrides = {};
+  switchTab('editor');
+  showToast(`Loaded "${s.title}"`);
+}
+
+function deleteSheet(id) {
+  showConfirm('Delete this saved sheet? This cannot be undone.', () => {
+    const sheets = loadSheets().filter(x => x.id !== id);
+    saveSheets(sheets);
+    renderHistory();
+  }, { danger: true, okLabel: 'Delete' });
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+let toastT;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════════════════
+// BULK WIZARD NAVIGATION
+// ══════════════════════════════════════════════════════
+let bulkStep = 1;
+const STEP_NAMES = ['Collector', 'Locations', 'Host', 'Dates', 'Review'];
+
+function updateStepUI() {
+  document.querySelectorAll('.b-step').forEach(el => el.classList.toggle('active', +el.dataset.step === bulkStep));
+  document.querySelectorAll('.step-dot').forEach(el => {
+    const n = +el.dataset.step;
+    el.classList.toggle('done', n < bulkStep);
+    el.classList.toggle('active', n === bulkStep);
+  });
+  document.getElementById('step-num').textContent = bulkStep;
+  document.getElementById('step-name').textContent = STEP_NAMES[bulkStep - 1];
+  document.getElementById('topbar-sub').textContent = STEP_NAMES[bulkStep - 1];
+  document.getElementById('bulk-back').disabled = bulkStep === 1;
+  document.getElementById('bulk-next').textContent = bulkStep === 5 ? 'Generate ✨' : 'Next →';
+  document.getElementById('locations-warn').classList.remove('show');
+  document.getElementById('dates-warn').classList.remove('show');
+  if (bulkStep === 5) renderReview();
+  document.querySelector('.bulk-body').scrollTop = 0;
+}
+
+function renderReview() {
+  document.getElementById('rv-collector').textContent = document.getElementById('b-collector').value.trim() || 'Collector';
+  const locs = getLocationsList();
+  document.getElementById('rv-locations').textContent = locs.length ? `${locs.length} location${locs.length > 1 ? 's' : ''}` : 'None added';
+  document.getElementById('rv-host').textContent = document.getElementById('b-host').value.trim() || 'Auto-detect';
+  const activeDates = dates.filter(d => d.d.trim()).length;
+  document.getElementById('rv-dates').textContent = `${activeDates} date(s) · ${buildPool().length} weighted slots`;
+}
+
+function bulkNext() {
+  if (bulkStep === 2 && !getLocationsList().length) {
+    document.getElementById('locations-warn').classList.add('show');
+    return;
+  }
+  if (bulkStep === 4 && !buildPool().length) {
+    document.getElementById('dates-warn').classList.add('show');
+    return;
+  }
+  if (bulkStep < 5) { bulkStep++; updateStepUI(); }
+  else { doGenerate(); }
+}
+
+function bulkBack() {
+  if (bulkStep > 1) { bulkStep--; updateStepUI(); }
+}
+
+function doGenerate() {
+  overrides = {};
+  labelData = generateData();
+  switchTab('editor');
+  setTimeout(buildPreview, 60);
+  showToast('Sheet generated — tap any label to fine-tune');
+}
+
+// ══════════════════════════════════════════════════════
+// DATES — manual add + smart date-range add
+// ══════════════════════════════════════════════════════
+let dates = [];
+
+const ROMAN_MONTHS = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+function formatDateRoman(d) {
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = ROMAN_MONTHS[d.getMonth()];
+  const yyyy = d.getFullYear();
+  return `${dd}.${mm}.${yyyy}`;
+}
+function isWeekendDay(d) { const day = d.getDay(); return day === 0 || day === 6; }
+
+function parseRomanDate(str) {
+  if (!str) return null;
+  const m = String(str).trim().match(/^(\d{1,2})\.([IVXLivxl]+)\.(\d{4})$/);
+  if (!m) return null;
+  const day = parseInt(m[1], 10);
+  const monthIdx = ROMAN_MONTHS.indexOf(m[2].toUpperCase());
+  const year = parseInt(m[3], 10);
+  if (monthIdx < 0) return null;
+  const d = new Date(year, monthIdx, day);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function buildDateUI() {
+  const list = document.getElementById('date-list');
+  list.innerHTML = '';
+  if (!dates.length) {
+    list.innerHTML = `<p class="hint" style="text-align:center;padding:6px 0 2px">No dates yet — add one below, or try Smart Add.</p>`;
+    return;
+  }
+  dates.forEach((item, i) => {
+    const row = document.createElement('div'); row.className = 'date-row';
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.readOnly = true; inp.inputMode = 'none';
+    inp.className = 'date-pick-input';
+    inp.value = item.d; inp.placeholder = 'Tap to pick a date';
+    inp.addEventListener('click', () => {
+      openCalendar(item.d, (formatted) => { dates[i].d = formatted; buildDateUI(); });
+    });
+    const tag = document.createElement('button'); tag.className = 'tag ' + item.t;
+    tag.textContent = item.t === 'weekend' ? 'WKD' : 'WRK';
+    tag.onclick = () => { dates[i].t = dates[i].t === 'weekend' ? 'workday' : 'weekend'; buildDateUI(); };
+    const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
+    rm.onclick = () => { dates.splice(i, 1); buildDateUI(); };
+    row.append(inp, tag, rm); list.appendChild(row);
+  });
+}
+
+function addDate() { dates.push({ d: '', t: 'weekend' }); buildDateUI(); }
+
+// ══════════════════════════════════════════════════════
+// CALENDAR DATE PICKER — every date field in the app opens
+// this app-themed picker rather than accepting typed text.
+// ══════════════════════════════════════════════════════
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let calOnSelect = null, calViewDate = new Date(), calSelectedDate = null;
+
+function openCalendar(currentValue, onSelect) {
+  calOnSelect = onSelect;
+  const parsed = parseRomanDate(currentValue);
+  calViewDate = parsed ? new Date(parsed.getFullYear(), parsed.getMonth(), 1) : new Date();
+  calSelectedDate = parsed;
+  renderCalendar();
+  document.getElementById('cal-overlay').classList.add('open');
+}
+
+function closeCalendar() {
+  document.getElementById('cal-overlay').classList.remove('open');
+  calOnSelect = null;
+}
+
+function calBgClose(e) {
+  if (e.target === document.getElementById('cal-overlay')) closeCalendar();
+}
+
+function calChangeMonth(delta) {
+  calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth() + delta, 1);
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+  document.getElementById('cal-month-label').textContent = `${MONTH_NAMES[m]} ${y}`;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  for (let i = 0; i < firstDay; i++) {
+    const pad = document.createElement('span'); pad.className = 'cal-day cal-day-pad';
+    grid.appendChild(pad);
+  }
+  const todayStr = new Date().toDateString();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(y, m, d);
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'cal-day'; btn.textContent = d;
+    if (isWeekendDay(dt)) btn.classList.add('cal-day-weekend');
+    if (dt.toDateString() === todayStr) btn.classList.add('cal-day-today');
+    if (calSelectedDate && dt.toDateString() === calSelectedDate.toDateString()) btn.classList.add('cal-day-selected');
+    btn.onclick = () => {
+      calSelectedDate = dt;
+      if (calOnSelect) calOnSelect(formatDateRoman(dt));
+      closeCalendar();
+    };
+    grid.appendChild(btn);
+  }
+}
+
+function calSelectToday() {
+  const dt = new Date();
+  calSelectedDate = dt;
+  if (calOnSelect) calOnSelect(formatDateRoman(dt));
+  closeCalendar();
+}
+
+function renderSmartChips() {
+  const wrap = document.getElementById('smart-chips');
+  wrap.innerHTML = [7, 14, 21, 30, 45, 60, 90].map(n =>
+    `<button type="button" class="chip" onclick="document.getElementById('smart-days').value=${n}">${n}d</button>`
+  ).join('');
+}
+function openSmartModal() {
+  renderSmartChips();
+  document.getElementById('smart-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('smart-days').focus(), 150);
+}
+function closeSmartModal() { document.getElementById('smart-overlay').classList.remove('open'); }
+function bgCloseSmart(e) { if (e.target === document.getElementById('smart-overlay')) closeSmartModal(); }
+
+function confirmSmartAdd() {
+  const n = parseInt(document.getElementById('smart-days').value, 10);
+  if (!n || n < 1) { showToast('Enter a valid number of days'); return; }
+  const days = Math.min(n, 3650);
+  const today = new Date();
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    dates.push({ d: formatDateRoman(d), t: isWeekendDay(d) ? 'weekend' : 'workday' });
+  }
+  buildDateUI();
+  closeSmartModal();
+  showToast(`Added ${days} date${days > 1 ? 's' : ''}`);
+}
+
+// ══════════════════════════════════════════════════════
+// TOUCH ON THE LABEL SHEET — fully custom, since native
+// touch scrolling/zooming is turned off (touch-action:none)
+// so we have complete, reliable control:
+//   • one finger, any direction, back and forth → pan
+//   • two fingers → pinch-zoom (stays wherever released,
+//     no auto-snap)
+//   • quick tap on a cell → edit it
+//   • quick double-tap on a cell → zoom to frame it, gently
+// ══════════════════════════════════════════════════════
+const MIN_ZOOM = 1;
+let pinchActive = false, pinchStartDist = 0, pinchStartZoom = 1, pinchBaseX = 0, pinchBaseY = 0;
+let panActive = false, panMoved = false, panStartX = 0, panStartY = 0, panStartScrollX = 0, panStartScrollY = 0;
+const PAN_THRESHOLD = 6; // px of finger movement before it counts as a pan, not a tap
+
+function touchDist(t0, t1) { return Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY); }
+
+function onTouchStart(e) {
+  if (e.touches.length === 2) {
+    pinchActive = true;
+    panActive = false;
+    const scroll = document.getElementById('canvas-scroll');
+    const rect = scroll.getBoundingClientRect();
+    pinchStartDist = touchDist(e.touches[0], e.touches[1]);
+    pinchStartZoom = zoomFactor;
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+    pinchBaseX = (scroll.scrollLeft + midX) / zoomFactor;
+    pinchBaseY = (scroll.scrollTop + midY) / zoomFactor;
+    e.preventDefault();
+  } else if (e.touches.length === 1) {
+    const scroll = document.getElementById('canvas-scroll');
+    panActive = true;
+    panMoved = false;
+    panStartX = e.touches[0].clientX;
+    panStartY = e.touches[0].clientY;
+    panStartScrollX = scroll.scrollLeft;
+    panStartScrollY = scroll.scrollTop;
+  }
+}
+
+let pinchRAF = null, pendingPinch = null;
+let panRAF = null, pendingPan = null;
+
+function onTouchMove(e) {
+  if (pinchActive && e.touches.length === 2) {
+    e.preventDefault();
+    const scroll = document.getElementById('canvas-scroll');
+    const rect = scroll.getBoundingClientRect();
+    const d = touchDist(e.touches[0], e.touches[1]);
+    let z = pinchStartZoom * (d / pinchStartDist);
+    z = Math.max(MIN_ZOOM, Math.min(COLS, z));
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+    pendingPinch = { z, midX, midY };
+    if (pinchRAF === null) pinchRAF = requestAnimationFrame(applyPendingPinch);
+    return;
+  }
+  if (panActive && e.touches.length === 1) {
+    e.preventDefault();
+    const dx = e.touches[0].clientX - panStartX;
+    const dy = e.touches[0].clientY - panStartY;
+    if (!panMoved && Math.hypot(dx, dy) > PAN_THRESHOLD) panMoved = true;
+    if (panMoved) {
+      pendingPan = { x: panStartScrollX - dx, y: panStartScrollY - dy };
+      if (panRAF === null) panRAF = requestAnimationFrame(applyPendingPan);
+    }
+  }
+}
+
+function applyPendingPinch() {
+  pinchRAF = null;
+  if (!pendingPinch) return;
+  const { z, midX, midY } = pendingPinch;
+  pendingPinch = null;
+  const scroll = document.getElementById('canvas-scroll');
+  zoomFactor = z;
+  // Skip rebuilding the (expensive) hit-layer on every touchmove —
+  // just resize the visible canvas so the gesture stays smooth.
+  applyZoomSize(false);
+  scroll.scrollLeft = pinchBaseX * zoomFactor - midX;
+  scroll.scrollTop  = pinchBaseY * zoomFactor - midY;
+}
+
+function applyPendingPan() {
+  panRAF = null;
+  if (!pendingPan) return;
+  const scroll = document.getElementById('canvas-scroll');
+  scroll.scrollLeft = pendingPan.x;
+  scroll.scrollTop  = pendingPan.y;
+  pendingPan = null;
+}
+
+// ── Tap / double-tap detection, driven straight off touchend ──
+// (not off click — click-timing on mobile is unreliable, especially
+// right after a zoom/pan gesture, which was causing double-taps to
+// get missed).
+const DOUBLE_TAP_MS = 300, DOUBLE_TAP_DIST = 32;
+let lastTapIdx = -1, lastTapTime = 0, lastTapX = 0, lastTapY = 0, tapTimer = null;
+
+function cellFromPoint(x, y) {
+  const el = document.elementFromPoint(x, y);
+  const cell = el && el.closest ? el.closest('.hit-cell') : null;
+  return cell ? parseInt(cell.dataset.idx, 10) : -1;
+}
+
+function onTouchEnd(e) {
+  const wasPinching = pinchActive;
+
+  if (pinchActive && e.touches.length < 2) {
+    pinchActive = false;
+    if (pinchRAF !== null) { cancelAnimationFrame(pinchRAF); pinchRAF = null; }
+    pendingPinch = null;
+    // Zoom stays exactly where the user left it — no auto-snap.
+    // Now that the gesture has settled, rebuild the hit-layer once
+    // so every cell (including edge ones) is tappable again.
+    applyZoomSize(true);
+  }
+
+  // A genuine tap: it was a single-finger touch that never turned into a pan.
+  if (!wasPinching && panActive && !panMoved && e.changedTouches && e.changedTouches.length) {
+    const t = e.changedTouches[0];
+    const idx = cellFromPoint(t.clientX, t.clientY);
+    if (idx >= 0) {
+      e.preventDefault(); // stop the browser's synthetic click — we're handling this tap ourselves
+      const now = Date.now();
+      const dist = Math.hypot(t.clientX - lastTapX, t.clientY - lastTapY);
+      if (lastTapIdx === idx && (now - lastTapTime) < DOUBLE_TAP_MS && dist < DOUBLE_TAP_DIST) {
+        clearTimeout(tapTimer);
+        lastTapIdx = -1;
+        zoomToCell(idx);
+      } else {
+        lastTapIdx = idx; lastTapTime = now; lastTapX = t.clientX; lastTapY = t.clientY;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { lastTapIdx = -1; openModal(idx); }, DOUBLE_TAP_MS);
+      }
+    }
+  }
+
+  if (e.touches.length === 1 && wasPinching) {
+    // Seamlessly hand off from a two-finger pinch to one-finger panning
+    // without waiting for a fresh touchstart.
+    const scroll = document.getElementById('canvas-scroll');
+    panActive = true;
+    panMoved = true;
+    panStartX = e.touches[0].clientX;
+    panStartY = e.touches[0].clientY;
+    panStartScrollX = scroll.scrollLeft;
+    panStartScrollY = scroll.scrollTop;
+  } else if (e.touches.length === 0) {
+    panActive = false;
+    panMoved = false;
+    if (panRAF !== null) { cancelAnimationFrame(panRAF); panRAF = null; }
+    pendingPan = null;
+  }
+}
+
+// Desktop (mouse) fallback: hit-cell click / double-click still works
+// via the listener attached in buildHitLayer, using the same timing
+// pattern — harmless on touch devices since preventDefault() above
+// already suppresses the synthetic click there.
+function handleCellTap(i) {
+  const now = Date.now();
+  if (lastTapIdx === i && (now - lastTapTime) < DOUBLE_TAP_MS) {
+    clearTimeout(tapTimer);
+    lastTapIdx = -1;
+    zoomToCell(i);
+  } else {
+    lastTapIdx = i;
+    lastTapTime = now;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { lastTapIdx = -1; openModal(i); }, DOUBLE_TAP_MS);
+  }
+}
+
+function zoomToCell(idx) {
+  const col = idx % COLS, row = Math.floor(idx / COLS);
+  const scroll = document.getElementById('canvas-scroll');
+  const viewW = scroll.clientWidth;
+
+  // Target: land halfway between the two zoom levels we've tried before —
+  // the original (~0.55×COLS, quite strong) and the last one (COLS/4, too
+  // mild). 0.4×COLS sits right in the middle of those.
+  const CELL_ZOOM_COEFFICIENT = 0.4;
+  let target = COLS * CELL_ZOOM_COEFFICIENT;
+  target = Math.max(MIN_ZOOM, Math.min(COLS, target));
+
+  // Tapping an already-framed cell again zooms back out to the full sheet.
+  if (Math.abs(zoomFactor - target) < 0.15) target = MIN_ZOOM;
+
+  animateZoomToCell(target, col, row);
+}
+
+function animateZoomToCell(target, col, row) {
+  const scroll = document.getElementById('canvas-scroll');
+  const startZoom = zoomFactor;
+  const startScrollX = scroll.scrollLeft, startScrollY = scroll.scrollTop;
+
+  const finalCssScale = baseCssScale * target;
+  const cW = (USABLE_W / COLS) * finalCssScale;
+  const cH = (USABLE_H / ROWS) * finalCssScale;
+  const mX = MAR * finalCssScale, mY = MAR * finalCssScale;
+  const cellCenterX = mX + (col + 0.5) * cW;
+  const cellCenterY = mY + (row + 0.5) * cH;
+  const finalDispW = baseDispW * target, finalDispH = baseDispH * target;
+  const viewW = scroll.clientWidth, viewH = scroll.clientHeight;
+
+  const maxScrollX = Math.max(0, finalDispW - viewW);
+  const maxScrollY = Math.max(0, finalDispH - viewH);
+  const finalScrollX = Math.max(0, Math.min(maxScrollX, cellCenterX - viewW / 2));
+  const finalScrollY = Math.max(0, Math.min(maxScrollY, cellCenterY - viewH / 2));
+
+  const t0 = performance.now(), dur = 260;
+  function frame(now) {
+    const p = Math.min(1, (now - t0) / dur);
+    const ease = 1 - Math.pow(1 - p, 3);
+    zoomFactor = startZoom + (target - startZoom) * ease;
+    applyZoomSize(p >= 1);
+    scroll.scrollLeft = startScrollX + (finalScrollX - startScrollX) * ease;
+    scroll.scrollTop  = startScrollY + (finalScrollY - startScrollY) * ease;
+    if (p >= 1) {
+      // Final, exact correction — guarantees the tapped cell is on
+      // screen even if any intermediate frame got clamped by the browser.
+      scroll.scrollLeft = finalScrollX;
+      scroll.scrollTop  = finalScrollY;
+    } else {
+      requestAnimationFrame(frame);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+// Block native pinch/double-tap zoom app-wide (Safari gesture events)
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+
+// Resize
+let rT;
+window.addEventListener('resize', () => {
+  clearTimeout(rT);
+  rT = setTimeout(() => {
+    if (document.getElementById('view-editor').classList.contains('active')) buildPreview();
+  }, 250);
+});
+
+// ══════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════
+applyPaperGeometry(currentPaper);
+updateFormatLabel();
+updateLabelTypeLabel();
+buildDateUI();
+
+document.getElementById('e-date').addEventListener('click', () => {
+  const inp = document.getElementById('e-date');
+  openCalendar(inp.value, (formatted) => { inp.value = formatted; });
+});
+
+const csEl = document.getElementById('canvas-scroll');
+csEl.addEventListener('touchstart', onTouchStart, { passive: false });
+csEl.addEventListener('touchmove', onTouchMove, { passive: false });
+csEl.addEventListener('touchend', onTouchEnd, { passive: false });
+csEl.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+// ══════════════════════════════════════════════════════
+// PWA — service worker (offline shell) + install prompt
+// ══════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const row = document.getElementById('install-app-row');
+  if (row) row.style.display = 'flex';
+});
+
+function installApp() {
+  if (!deferredInstallPrompt) return;
+  closeMenu();
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.finally(() => { deferredInstallPrompt = null; });
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const row = document.getElementById('install-app-row');
+  if (row) row.style.display = 'none';
+  showToast('Installed — find it on your home screen');
+});
+
+switchTab('editor');
+setTimeout(buildPreview, 60);
+
+// ══════════════════════════════════════════════════════
+// SPLASH SCREEN — brief branded loader while the app boots
+// ══════════════════════════════════════════════════════
+(function hideSplash() {
+  const minSplashEnd = Date.now() + 650;
+  const remaining = Math.max(0, minSplashEnd - Date.now());
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    if (!splash) return;
+    splash.style.opacity = '0';
+    setTimeout(() => { splash.style.display = 'none'; }, 300);
+  }, remaining);
+})();
+</script>
+</body>
+</html>
