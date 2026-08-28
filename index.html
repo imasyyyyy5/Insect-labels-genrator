@@ -91,7 +91,7 @@
   --text:#ece6d4;--sub:#9a9782;
   --r:9px;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:'Lora',Georgia,serif;background:var(--soil);color:var(--text);line-height:1.6;position:relative}
 body::before{content:'';position:fixed;inset:0;background-image:var(--grain);opacity:.035;pointer-events:none;mix-blend-mode:overlay;z-index:1}
 a{color:inherit}
@@ -243,7 +243,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2.5px solid v
 .faq-item .a{padding:0 18px 16px;color:var(--sub);font-size:.87rem;max-width:64ch}
 
 .cta-hero{background:linear-gradient(155deg,var(--moss),var(--moss-dk));border-radius:14px;padding:30px 28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 20px 50px -20px rgba(54,82,39,.6)}
-.cta-hero::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.06;mix-blend-mode:overlay}
+.cta-hero::after{content:'';position:absolute;inset:0;background-image:var(--grain);opacity:.06;mix-blend-mode:overlay;pointer-events:none}
 .cta-hero h2{font-size:1.35rem;font-weight:600;margin-bottom:8px;position:relative}
 .cta-hero p{font-size:.85rem;opacity:.88;line-height:1.6;font-style:italic;margin-bottom:18px;max-width:60ch;position:relative}
 .btn-cta-full{width:100%;max-width:320px;padding:14px;background:var(--paper);color:var(--moss-dk);border:none;border-radius:var(--r);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .15s;position:relative;box-shadow:0 6px 16px rgba(0,0,0,.25)}
