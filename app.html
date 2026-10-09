@@ -4,10 +4,23 @@
 <meta name="google-site-verification" content="Tjf1KCSVqw2DIdWFJZ1Li1UtKZGX9LYnZ6MgSZhLXvs" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Insect Label Generator — IARI</title>
-<meta name="description" content="A free, fast, and easy Insect Label Generator for standard IARI format. Create, edit, and download A4 sheets of entomology collection labels.">
-<meta name="keywords" content="insect label generator, entomology labels, IARI insect labels, agriculture, bug collection, label maker, insect labels, label generator for insect collectio">
+<title>Free Insect Label Generator | Entomology Labels (IARI Format)</title>
+<meta name="description" content="Create free, print-ready insect collection labels in IARI format. Generate up to 120 custom entomology labels per A4 sheet instantly. No sign-up required.">
+<meta name="keywords" content="insect label generator, entomology labels, IARI insect labels, bug collection, label maker, insect labels, specimen label, A4 label sheet, PAU entomology, custom insect labels, free insect label maker, entomology pin labels, scientific specimen labels">
 <meta name="author" content="Amtoj Singh">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Insect Label Generator | Entomology Labels">
+<meta property="og:description" content="Create free, print-ready insect collection labels in IARI format. Generate up to 120 custom entomology labels per A4 sheet instantly.">
+<meta property="og:url" content="https://imasyyyyy5.github.io/Insect-labels-genrator/app.html">
+<meta property="og:image" content="https://imasyyyyy5.github.io/Insect-labels-genrator/icons/icon-192.png">
+<meta property="og:site_name" content="Insect Label Generator">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Insect Label Generator | Entomology Labels">
+<meta name="twitter:description" content="Generate print-ready IARI-format insect collection labels — 120 per A4 sheet, free and offline-capable.">
+<meta name="twitter:image" content="https://imasyyyyy5.github.io/Insect-labels-genrator/icons/icon-192.png">
+
 <meta name="theme-color" content="#0d0f13">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
@@ -232,13 +245,11 @@ textarea{resize:vertical;min-height:180px;font-size:.82rem}
       <h1 id="topbar-title">Editor</h1>
       <small id="topbar-sub">Tap any cell to edit</small>
     </div>
-    <a href="https://www.linkedin.com/in/amtoj-singh-1a8764387?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="ig-link" title="Amtoj Singh on LinkedIn">
+    <button class="ig-link" title="Send Feedback" onclick="alert('Feedback form coming soon! Thank you for your interest.')" style="background:none;border:none;cursor:pointer;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-        <rect x="2" y="9" width="4" height="12"></rect>
-        <circle cx="4" cy="4" r="2"></circle>
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
       </svg>
-    </a>
+    </button>
   </header>
 
   <main class="content">
@@ -801,12 +812,17 @@ function drawSheet(canvas, data) {
 // ══════════════════════════════════════════════════════
 function buildPreview() {
   const scroll = document.getElementById('canvas-scroll');
-  if (!scroll || scroll.clientWidth === 0) return;
-  const avail  = scroll.clientWidth - 32;
+  if (!scroll || scroll.clientWidth === 0 || scroll.clientHeight === 0) return;
 
-  baseDispW = avail;
-  baseDispH = C_H * (avail / C_W);
-  baseCssScale = avail / C_W;
+  const availW  = scroll.clientWidth - 32;
+  const availH = scroll.clientHeight - 32;
+
+  // Calculate scale to fit both width and height
+  const scale = Math.min(availW / C_W, availH / C_H);
+
+  baseDispW = C_W * scale;
+  baseDispH = C_H * scale;
+  baseCssScale = scale;
   zoomFactor = 1;
 
   const canvas = document.getElementById('sheet-canvas');
